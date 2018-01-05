@@ -9,7 +9,9 @@ import {
   Alert,
   TouchableHighlight,
   TouchableOpacity,
+  AsyncStorage
 } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import Loading from '../Loading';
 import Settings from '../../Config/Setting';
 export default class EnterAmount extends Component {
@@ -38,11 +40,12 @@ export default class EnterAmount extends Component {
     console.log(this.state);
     var id=this.state.orderNumber;
     try {
+      const token =await AsyncStorage.getItem('token');
       let response = await fetch(
         'https://mcfpayapi.ca/api/v1/merchant/get_txn_by_id/',{
           method: 'POST',
           headers: {
-            'Auth-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEsInJvbGUiOjEwMSwidXNlcm5hbWUiOiJ0ZXN0VXNlciIsImFjY291bnRfaWQiOjMsImV4cGlyZSI6MTUxMzIyMjM0Nn0.px6eP3IIj8-jwy-cXmGJziPBCQWUIOJU7iY1-5-EVGE',
+            'Auth-Token': token,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -50,12 +53,46 @@ export default class EnterAmount extends Component {
           }),
         });
       let responseJson = await response.json();
-      console.log(responseJson);
-      if(response.ev_error == '0'){
+      if(responseJson.ev_error === 0){
         this.createRefund(responseJson.ev_data);
-        //      this.setState({exchangeRate:responseJson.ev_data.exchange_rate})
               return responseJson.ev_data;
-      } else {
+      } else if ( responseJson.ev_error ===10010){
+        Alert.alert(
+          "ERROR",
+          'Token Expires, please login again.',
+          [
+            {text: 'Ok',onPress:()=>{
+              this.props.navigator.push({
+              screen: 'Login',
+              title: '',
+              navigatorStyle: {
+                navBarHidden: true
+              },
+              passProps: {},
+              animationType: 'slide-horizontal'
+            });}},
+          ],
+          { cancelable: false }
+        )
+      }else if(responseJson.ev_error === 10011) {
+        Alert.alert(
+          "ERROR",
+          'Your account has been logged in from another device.',
+          [
+            {text: 'Ok',onPress:()=>{
+              this.props.navigator.push({
+              screen: 'Login',
+              title: '',
+              navigatorStyle: {
+                navBarHidden: true
+              },
+              passProps: {},
+              animationType: 'slide-horizontal'
+            });}},
+          ],
+          { cancelable: false }
+        )
+      }   else {
         Alert.alert(
           "ERROR",
           'Invalid Order Number',
@@ -76,19 +113,20 @@ export default class EnterAmount extends Component {
   }
   async createRefund(order){
     try {
+      const token =await AsyncStorage.getItem('token');
       console.log(order);
       let response = await fetch(
         'https://mcfpayapi.ca/api/v1/merchant/create_refund/',{
           method: 'POST',
           headers: {
-            'Auth-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEsInJvbGUiOjEwMSwidXNlcm5hbWUiOiJ0ZXN0VXNlciIsImFjY291bnRfaWQiOjMsImV4cGlyZSI6MTUxMzIyMjM0Nn0.px6eP3IIj8-jwy-cXmGJziPBCQWUIOJU7iY1-5-EVGE',
+            'Auth-Token': token,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             'vendor_channel':order.vendor_channel,
             'total_fee_in_cent':+(order.amount_in_cent),
             'total_fee_currency':order.amount_currency,
-            'device_id':'aaaa',
+            'device_id':DeviceInfo.getSerialNumber(),
             'out_trade_no':order.ref_id,
             'refund_fee_in_cent':+(order.amount_in_cent),
             'refund_fee_currency':order.amount_currency,

@@ -12,19 +12,20 @@ import {
   Modal,
   ActivityIndicator,
   Button,
-  Alert
+  Alert,
+  AsyncStorage
 } from 'react-native';
 import PayModule from '../../Module/Pay/PayModule';
 import Settings from '../../Config/Setting';
 import Loading from '../Loading';
+import DeviceInfo from 'react-native-device-info';
 export default class Pay extends Component {
   static navigatorStyle = {
     navBarTextColor:"#c49a6c",
     navBarBackgroundColor:"#2f3038",
     navBarButtonColor:"#c49a6c"
   }
-  constructor(props)
-  {
+  constructor(props){
     super(props);
     this.state = {
       isShowing: false,
@@ -43,6 +44,7 @@ export default class Pay extends Component {
       tradeNumber: '',
       exchangeRate: '',
       out_trade_no: '',
+      token: ''
     };
     this._pressButton1=this._pressButton1.bind(this);
     this._pressButton2=this._pressButton2.bind(this);
@@ -54,17 +56,21 @@ export default class Pay extends Component {
     this._calculateRate=this._calculateRate.bind(this);
     this._createOrder=this._createOrder.bind(this);
   }
-  componentWillMount()
-  {
+  componentWillMount(){
     var results=this.getMoviesFromApi();
   }
   async getMoviesFromApi() {
     try {
+      const data =await AsyncStorage.getItem('token');
+      this.setState({
+        token:data
+      })
+      const {token} = this.state;
       let response = await fetch(
         'https://mcfpayapi.ca/api/v1/merchant/get_exchange_rate/',{
           method: 'POST',
           headers: {
-            'Auth-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEsInJvbGUiOjEwMSwidXNlcm5hbWUiOiJ0ZXN0VXNlciIsImFjY291bnRfaWQiOjMsImV4cGlyZSI6MTUxMzIyMjM0Nn0.px6eP3IIj8-jwy-cXmGJziPBCQWUIOJU7iY1-5-EVGE',
+            'Auth-Token': token,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -73,9 +79,46 @@ export default class Pay extends Component {
           }),
         });
       let responseJson = await response.json();
-      console.log(responseJson.ev_data);
-      this.setState({exchangeRate:responseJson.ev_data.exchange_rate})
-      return responseJson.ev_data;
+      if (responseJson.ev_error === 0) {
+        this.setState({exchangeRate:responseJson.ev_data.exchange_rate})
+        return responseJson.ev_data;
+      } else if(responseJson.ev_error === 10010) {
+        Alert.alert(
+          "ERROR",
+          'Token Expires, please login again.',
+          [
+            {text: 'Ok',onPress:()=>{
+              this.props.navigator.push({
+              screen: 'Login',
+              title: '',
+              navigatorStyle: {
+                navBarHidden: true
+              },
+              passProps: {},
+              animationType: 'slide-horizontal'
+            });}},
+          ],
+          { cancelable: false }
+        )
+      } else if(responseJson.ev_error === 10011) {
+        Alert.alert(
+          "ERROR",
+          'Your account has been logged in from another device.',
+          [
+            {text: 'Ok',onPress:()=>{
+              this.props.navigator.push({
+              screen: 'Login',
+              title: '',
+              navigatorStyle: {
+                navBarHidden: true
+              },
+              passProps: {},
+              animationType: 'slide-horizontal'
+            });}},
+          ],
+          { cancelable: false }
+        )
+      }  
     } catch (error) {
       console.error(error);
     }
@@ -92,25 +135,26 @@ export default class Pay extends Component {
   async _getOrderDetailFromApi(totalAmount){
     try {
       const {channel,title,companyName,out_trade_no} =  this.props;
+      const {token} = this.state;
       console.log(totalAmount);
       let response = await fetch(
         'https://mcfpayapi.ca/api/v1/merchant/create_order/',{
           method: 'POST',
           headers: {
-            'Auth-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEsInJvbGUiOjEwMSwidXNlcm5hbWUiOiJ0ZXN0VXNlciIsImFjY291bnRfaWQiOjMsImV4cGlyZSI6MTUxMzIyMjM0Nn0.px6eP3IIj8-jwy-cXmGJziPBCQWUIOJU7iY1-5-EVGE',
+            'Auth-Token': token,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             'vendor_channel': channel,
             'total_fee_currency': 'CAD',
-            'device_id':'aaaa',
+            'device_id':DeviceInfo.getSerialNumber(),
             'total_fee_in_cent':totalAmount
           }),
         });
       let responseJson = await response.json();
       this.refs.loading.endLoading();
       console.log(responseJson);
-      if (responseJson.ev_error == '0') {
+      if (responseJson.ev_error === 0) {
         let codeUrl = responseJson.ev_data.code_url;
         let out_trade_no = responseJson.ev_data.out_trade_no
         let totalAmount = this._calculateTotal();
@@ -118,19 +162,63 @@ export default class Pay extends Component {
         this.props.navigator.push({
           screen: 'CreateQRCode',
           title: 'QR Code',
-          passProps: {codeUrl,totalAmount,out_trade_no,channel},
+          passProps: {token,codeUrl,totalAmount,out_trade_no,channel},
           animationType: 'slide-horizontal'
         });
-      }
-      return responseJson.ev_data;
+        return responseJson.ev_data;
+      } else if(responseJson.ev_error === 10010) {
+        Alert.alert(
+          "ERROR",
+          'Token Expires, please login again.',
+          [
+            {text: 'Ok',onPress:()=>{
+              this.props.navigator.push({
+              screen: 'Login',
+              title: '',
+              navigatorStyle: {
+                navBarHidden: true
+              },
+              passProps: {},
+              animationType: 'slide-horizontal'
+            });}},
+          ],
+          { cancelable: false }
+        )
+      } else if(responseJson.ev_error === 10011) {
+        Alert.alert(
+          "ERROR",
+          'Your account has been logged in from another device.',
+          [
+            {text: 'Ok',onPress:()=>{
+              this.props.navigator.push({
+              screen: 'Login',
+              title: '',
+              navigatorStyle: {
+                navBarHidden: true
+              },
+              passProps: {},
+              animationType: 'slide-horizontal'
+            });}},
+          ],
+          { cancelable: false }
+        )
+      }  else {
+        Alert.alert(
+          "ERROR",
+          'Invalid QR Code',
+          [
+            {text: 'Ok', onPress:()=>this.refs.loading.endLoading()},
+          ],
+          { cancelable: false }
+        )
+      }  
     } catch (error) {
       console.error(error);
     }
   }
   async preCreateAuthpay() {
-    this.refs.loading.startLoading();
     const {channel,title,companyName} =  this.props;
-    const {tipAmount} = this.state;
+    const {tipAmount,token} = this.state;
     let totalAmount = this._calculateTotal();
     const reg = /^(([1-9]\d*)(\.\d{1,2})?)$|(0\.0?([1-9]\d?))$/;
     console.log(tipAmount,reg.test(tipAmount))
@@ -141,7 +229,8 @@ export default class Pay extends Component {
        (this.state.tipsType == '4' && reg.test(tipAmount))
       ){
         try{
-          const data = await PayModule.preCreateAuthpay(channel,totalAmount);
+          this.refs.loading.startLoading();
+          const data = await PayModule.preCreateAuthpay(token,channel,totalAmount);
           this.setState({out_trade_no:data});
           this.refs.loading.endLoading();
           const {out_trade_no} = data;
@@ -149,19 +238,59 @@ export default class Pay extends Component {
           this.props.navigator.push({
              screen: 'ScanQRCode',
              title: 'Scan QR Code',
-             passProps: {channel,totalAmount,out_trade_no,companyName},
+             passProps: {token,channel,totalAmount,out_trade_no,companyName},
              animationType: 'slide-horizontal'
            });
         }catch(error){
           console.log(error)
-          Alert.alert(
-            "ERROR",
-            error,
-            [
-              {text: 'Ok', onPress:()=>this.refs.loading.endLoading()},
-            ],
-            { cancelable: false }
-          )
+          if (error == 'TOKEN_EXPIRE') {
+            Alert.alert(
+              "ERROR",
+              'Token Expires, please login again.',
+              [
+                {text: 'Ok',onPress:()=>{
+                  this.refs.loading.endLoading();
+                  this.props.navigator.push({
+                  screen: 'Login',
+                  title: '',
+                  navigatorStyle: {
+                    navBarHidden: true
+                  },
+                  passProps: {},
+                  animationType: 'slide-horizontal'
+                });}},
+              ],
+              { cancelable: false }
+            )
+          } if (error == 'TOKEN_KICKED') {
+            Alert.alert(
+              "ERROR",
+              'Your account has been logged in from another device.',
+              [
+                {text: 'Ok',onPress:()=>{
+                  this.refs.loading.endLoading();
+                  this.props.navigator.push({
+                  screen: 'Login',
+                  title: '',
+                  navigatorStyle: {
+                    navBarHidden: true
+                  },
+                  passProps: {},
+                  animationType: 'slide-horizontal'
+                });}},
+              ],
+              { cancelable: false }
+            )
+          } else {
+            Alert.alert(
+              "ERROR",
+              error,
+              [
+                {text: 'Ok', onPress:()=>this.refs.loading.endLoading()},
+              ],
+              { cancelable: false }
+            )
+          }
         }
       } else { return }
   }

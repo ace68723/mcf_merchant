@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Settings from '../../Config/Setting';
 import PrintModule from '../../Module/Print/PrintModule'
+import Loading from '../Loading';
 export default class Pay extends Component {
   static navigatorStyle = {
     navBarTextColor:"#c49a6c",
@@ -57,7 +58,7 @@ export default class Pay extends Component {
   render() {
     return (
       <View style={styles.container}>
-
+        <Loading ref="loading" size={60}/>
         <View style={{
           backgroundColor:'#F4F4F4',
           flex:1,

@@ -11,7 +11,8 @@ import {
   TouchableOpacity,
   NativeModules,
   Button,
-  Alert
+  Alert,
+  AsyncStorage
 } from 'react-native';
 import LoginModule from '../../Module/Login/LoginModule';
 import Settings from '../../Config/Setting'
@@ -21,9 +22,9 @@ import Loading from '../Loading';
 export default class Login extends Component<{}> {
   constructor(props) {
     super(props);
-    this.state = { merchantId:'testMerchant',
-                   username:'testAdmin',
-                   password:'admin123*',
+    this.state = { merchantId:'',
+                   username:'',
+                   password:'',
                    isShowing: false,
                  };
 
@@ -38,6 +39,9 @@ export default class Login extends Component<{}> {
        try{
           this.refs.loading.startLoading();
           const data = await LoginModule.login(merchantId, username, password);
+          await AsyncStorage.setItem('token', data.token);
+          data =await AsyncStorage.getItem('token')
+          console.log(data)
           this.refs.loading.endLoading();
           this.props.navigator.push({
               screen: 'Home',
@@ -48,15 +52,19 @@ export default class Login extends Component<{}> {
               animationType: 'slide-down'
             });
        }catch(error){
+         if(error == 'LOGIN_FAIL') {
           console.log(error)
           Alert.alert(
             "ERROR",
-            error,
+            'Login failed. Please check your account information and try again',
             [
               {text: 'Ok', onPress:()=>this.refs.loading.endLoading()},
             ],
             { cancelable: false }
           )
+         } else {
+           return
+         } 
        }
   }
 

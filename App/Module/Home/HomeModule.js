@@ -1,9 +1,9 @@
 import HomeAPI from './HomeAPI';
 
 export default  {
-  async getCompanyInfo() {
+  async getCompanyInfo(token) {
     try {
-      const companyInfo = await HomeAPI.getCompanyInfo();
+      const companyInfo = await HomeAPI.getCompanyInfo(token);
       if(companyInfo.ev_error == "0" ){
         const eo_data = companyInfo.ev_data;
          return eo_data

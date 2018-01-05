@@ -23,7 +23,10 @@ export default  {
       console.log(options)
     return fetch(url,options)
          .then((response) => response.json())
-         .catch((error) => {throw error})
+         .catch((error) => {
+             console.log(error);
+             throw error
+        })
      }
   }
   

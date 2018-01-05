@@ -10,11 +10,13 @@ import {
   TextInput,
   Animated,
   Easing,
-  Alert
+  Alert,
+  AsyncStorage
 } from 'react-native';
 import Camera from 'react-native-camera';
 import Settings from '../../Config/Setting';
 import Loading from '../Loading';
+import DeviceInfo from 'react-native-device-info';
 // import Camera from 'react-native-camera';
 
 export default class ScanQRCode extends Component {
@@ -30,6 +32,7 @@ export default class ScanQRCode extends Component {
         moveAnim: new Animated.Value(0),
         showCamera: true,
         cameraType: Camera.constants.Type.back,
+        token: '',
     };
     this._goEnterRefoundNumber = this._goEnterRefoundNumber.bind(this);
     this._onBarCodeRead = this._onBarCodeRead.bind(this);
@@ -37,7 +40,14 @@ export default class ScanQRCode extends Component {
   }
   componentDidMount() {
        this.startAnimation();
+       this.getToken();
    }
+   async getToken() {
+    const data =await AsyncStorage.getItem('token');
+    this.setState({
+      token: data,
+    })
+  }
    _goEnterRefoundNumber() {
     this.props.navigator.push({
        screen: 'EnterRefoundNumber',
@@ -92,11 +102,12 @@ export default class ScanQRCode extends Component {
 
       var id=outTradeNo;
       try {
+        const { token } = this.state;
         let response = await fetch(
           'https://mcfpayapi.ca/api/v1/merchant/get_txn_by_id/',{
             method: 'POST',
             headers: {
-              'Auth-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEsInJvbGUiOjEwMSwidXNlcm5hbWUiOiJ0ZXN0VXNlciIsImFjY291bnRfaWQiOjMsImV4cGlyZSI6MTUxMzIyMjM0Nn0.px6eP3IIj8-jwy-cXmGJziPBCQWUIOJU7iY1-5-EVGE',
+              'Auth-Token': token,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -105,9 +116,55 @@ export default class ScanQRCode extends Component {
           });
         let responseJson = await response.json();
         console.log(responseJson);
-        this.createRefund(responseJson.ev_data);
-    //      this.setState({exchangeRate:responseJson.ev_data.exchange_rate})
-        return responseJson.ev_data;
+        if(responseJson.ev_error ===0 ) {
+          this.createRefund(responseJson.ev_data);
+          return responseJson.ev_data;
+        } else if ( responseJson.ev_error ===10010){
+          Alert.alert(
+            "ERROR",
+            'Token Expires, please login again.',
+            [
+              {text: 'Ok',onPress:()=>{
+                this.props.navigator.push({
+                screen: 'Login',
+                title: '',
+                navigatorStyle: {
+                  navBarHidden: true
+                },
+                passProps: {},
+                animationType: 'slide-horizontal'
+              });}},
+            ],
+            { cancelable: false }
+          )
+        }else if(responseJson.ev_error === 10011) {
+          Alert.alert(
+            "ERROR",
+            'Your account has been logged in from another device.',
+            [
+              {text: 'Ok',onPress:()=>{
+                this.props.navigator.push({
+                screen: 'Login',
+                title: '',
+                navigatorStyle: {
+                  navBarHidden: true
+                },
+                passProps: {},
+                animationType: 'slide-horizontal'
+              });}},
+            ],
+            { cancelable: false }
+          )
+        }else {
+          Alert.alert(
+            "ERROR",
+            'Invalid QR Code',
+            [
+              {text: 'Ok', onPress:()=>this.refs.loading.endLoading()},
+            ],
+            { cancelable: false }
+          )
+        }
       } catch (error) {
         console.error(error);
         Alert.alert(
@@ -122,19 +179,20 @@ export default class ScanQRCode extends Component {
    }
    async createRefund(order){
       try {
+        const {token} = this.state;
         console.log(order);
         let response = await fetch(
           'https://mcfpayapi.ca/api/v1/merchant/create_refund/',{
             method: 'POST',
             headers: {
-              'Auth-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEsInJvbGUiOjEwMSwidXNlcm5hbWUiOiJ0ZXN0VXNlciIsImFjY291bnRfaWQiOjMsImV4cGlyZSI6MTUxMzIyMjM0Nn0.px6eP3IIj8-jwy-cXmGJziPBCQWUIOJU7iY1-5-EVGE',
+              'Auth-Token': token,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               'vendor_channel':order.vendor_channel,
               'total_fee_in_cent':+(order.amount_in_cent),
               'total_fee_currency':order.amount_currency,
-              'device_id':'aaaa',
+              'device_id':DeviceInfo.getSerialNumber(),
               'out_trade_no':order.ref_id,
               'refund_fee_in_cent':+(order.amount_in_cent),
               'refund_fee_currency':order.amount_currency,

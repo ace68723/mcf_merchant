@@ -1,12 +1,12 @@
 export default  {
-  getHistoryTransaction(timeZone,startTime,pageNum,endTime,pageSize){
+  getHistoryTransaction(token,timeZone,startTime,pageNum,endTime,pageSize){
     const url = 'https://mcfpayapi.ca/api/v1/merchant/query_txns_by_time/';
 
     let options = {
         method: 'POST',
         mode:'cors',
         headers: {
-          'Auth-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjIsInJvbGUiOjY2NiwidXNlcm5hbWUiOiJ0ZXN0QWRtaW4iLCJhY2NvdW50X2lkIjozLCJleHBpcmUiOjE1MTMyMjIzMDB9.1M0YWtQNcoHmTQOwx0ZewAsqG3yETUmiJf8BiVBU56A',
+          'Auth-Token': token,
           'Content-Type': 'application/json',
         }
     }
@@ -29,7 +29,7 @@ console.log(options);
 
   },
 
-  getTodayTransaction(pageNum,pageSize){
+  getTodayTransaction(token,pageNum,pageSize){
     const url = 'https://mcfpayapi.ca/api/v1/merchant/get_hot_txns/';
     console.log(url);
 
@@ -37,7 +37,7 @@ console.log(options);
         method: 'POST',
         mode:'cors',
         headers: {
-          'Auth-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjIsInJvbGUiOjY2NiwidXNlcm5hbWUiOiJ0ZXN0QWRtaW4iLCJhY2NvdW50X2lkIjozLCJleHBpcmUiOjE1MTMyMjIzMDB9.1M0YWtQNcoHmTQOwx0ZewAsqG3yETUmiJf8BiVBU56A',
+          'Auth-Token': token,
           'Content-Type': 'application/json',
         }
     }

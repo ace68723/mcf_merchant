@@ -16,8 +16,7 @@ export default  {
       }
     } catch (error) {
       console.log(error);
-      const errorMessage = 'error1';
-      throw errorMessage
+      throw error
     }
 
   }

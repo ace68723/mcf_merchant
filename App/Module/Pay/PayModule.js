@@ -1,15 +1,15 @@
 import PayAPI from './PayAPI';
 import DeviceInfo from 'react-native-device-info';
-var  UUID = DeviceInfo.getUniqueID();export default  {
-  async preCreateAuthpay(channel,amount){
+export default  {
+  async preCreateAuthpay(token,channel,amount){
     try {
-      const device_id = 'aaaa';
+      const device_id = DeviceInfo.getSerialNumber();
       console.log(channel,amount,device_id)
       amount = parseInt(amount * 100,10);
       console.log(channel,amount,device_id);
-      const prePayInfo = await PayAPI.preCreateAuthpay(channel,amount,device_id);
+      const prePayInfo = await PayAPI.preCreateAuthpay(token,channel,amount,device_id);
+      console.log(prePayInfo);
       if(prePayInfo.ev_error == "0" ){
-
          const eo_data =prePayInfo.ev_data;
          return eo_data;
       }else{
@@ -18,8 +18,7 @@ var  UUID = DeviceInfo.getUniqueID();export default  {
       }
     } catch (error) {
       console.log(error);
-      const errorMessage = 'error1';
-      throw errorMessage
+      throw error
     }
 
   }

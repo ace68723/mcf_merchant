@@ -1,9 +1,9 @@
 import TransactionAPI from './TransactionAPI';
 
 export default  {
-  async getTodayTransaction(pageNum,pageSize){
+  async getTodayTransaction(token,pageNum,pageSize){
     try {
-      const todayTransactionInfo = await TransactionAPI.getTodayTransaction(pageNum,pageSize);
+      const todayTransactionInfo = await TransactionAPI.getTodayTransaction(token,pageNum,pageSize);
       console.log(todayTransactionInfo)
       if(todayTransactionInfo.ev_error == "0" ){
         const eo_data =todayTransactionInfo.ev_data;
@@ -25,16 +25,15 @@ export default  {
       }
     } catch (error) {
       console.log(error);
-      const errorMessage = 'error1';
-      throw errorMessage
+      throw error
     }
 
   },
 
-  async getHistoryTransaction(startTime,pageNum,endTime,pageSize){
+  async getHistoryTransaction(token,startTime,pageNum,endTime,pageSize){
     try {
       const timeZone = 'America/Toronto';
-      const historyTransactionInfo = await TransactionAPI.getHistoryTransaction(timeZone,startTime,pageNum,endTime,pageSize);
+      const historyTransactionInfo = await TransactionAPI.getHistoryTransaction(token,timeZone,startTime,pageNum,endTime,pageSize);
       console.log(historyTransactionInfo)
       if(historyTransactionInfo.ev_error == "0" ){
         const eo_data =historyTransactionInfo.ev_data;

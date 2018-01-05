@@ -1,11 +1,11 @@
 export default  {
-  createAuthpay(reqData){
+  createAuthpay(token,reqData){
     const url = 'https://mcfpayapi.ca/api/v1/merchant/create_authpay/';
     let options = {
         method: 'POST',
         mode:'cors',
         headers: {
-          'Auth-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjIsInJvbGUiOjY2NiwidXNlcm5hbWUiOiJ0ZXN0QWRtaW4iLCJhY2NvdW50X2lkIjozLCJleHBpcmUiOjE1MTMyMjIzMDB9.1M0YWtQNcoHmTQOwx0ZewAsqG3yETUmiJf8BiVBU56A',
+          'Auth-Token': token,
           'Content-Type': 'application/json',
         }
     }
@@ -27,13 +27,13 @@ export default  {
        .then((response) => response.json())
        .catch((error) => {throw error})
    },
-   checkOrderStatus(channel,outTradeNo){
+   checkOrderStatus(token,channel,outTradeNo){
      const url = 'https://mcfpayapi.ca/api/v1/merchant/check_order_status/';
      let options = {
          method: 'POST',
          mode:'cors',
          headers: {
-           'Auth-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjIsInJvbGUiOjY2NiwidXNlcm5hbWUiOiJ0ZXN0QWRtaW4iLCJhY2NvdW50X2lkIjozLCJleHBpcmUiOjE1MTMyMjIzMDB9.1M0YWtQNcoHmTQOwx0ZewAsqG3yETUmiJf8BiVBU56A',
+           'Auth-Token': token,
            'Content-Type': 'application/json',
          }
      }

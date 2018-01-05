@@ -1,14 +1,15 @@
 'use strict'
 import ScanQRCodeAPI from './ScanQRCodeAPI';
+import DeviceInfo from 'react-native-device-info';
 
 export default  {
-  async createAuthpay(channel, totalAmount, outTradeNo, authCode){
+  async createAuthpay(token,channel, totalAmount, outTradeNo, authCode){
     try {
       const vendor_channel = channel;
       const total_fee_in_cent = parseInt(totalAmount*100,10);
       const total_fee_currency = "CAD";
       const out_trade_no = outTradeNo;
-      const device_id = 'aaaa';
+      const device_id = DeviceInfo.getSerialNumber();
       const auth_code = authCode;
       // alert('createAuthpay',total_fee_in_cent)
       const reqData = {
@@ -19,7 +20,7 @@ export default  {
                        device_id,
                        auth_code,
                      }
-      const payInfo = await ScanQRCodeAPI.createAuthpay(reqData);
+      const payInfo = await ScanQRCodeAPI.createAuthpay(token,reqData);
 
       if(payInfo.ev_error === 0 ){
          const eo_data =payInfo.ev_data;
@@ -30,14 +31,14 @@ export default  {
       }
     } catch (error) {
       console.log(error);
-      const errorMessage = 'error1';
+      const errorMessage = error;
       throw errorMessage
     }
 
   },
-  async checkOrderStatus(iv_channel,iv_outTradeNo){
+  async checkOrderStatus(token,iv_channel,iv_outTradeNo){
     try {
-      const result = await ScanQRCodeAPI.checkOrderStatus(iv_channel,iv_outTradeNo);
+      const result = await ScanQRCodeAPI.checkOrderStatus(token,iv_channel,iv_outTradeNo);
       console.log(result);
       if(result.ev_error === 0 ){
          const {ev_data} = result;
@@ -52,7 +53,6 @@ export default  {
          const totalAmount = (+(ev_data.amount_in_cent))/100;
          const CNYamount = (+(ev_data.paid_fee_in_cent))/100
          const status = ev_data.status;
-
          const eo_data = {
             merchantName,
             merchantAddress,
@@ -68,7 +68,7 @@ export default  {
          console.log(eo_data);
          return eo_data;
       }else{
-        const errorMessage = result.ev_message;
+        const errorMessage = 'Pay failed. Please try agian';
         throw errorMessage
       }
     } catch (error) {

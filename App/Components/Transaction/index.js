@@ -8,7 +8,8 @@ import {
   Dimensions,
   ScrollView,
   DatePickerAndroid,
-  Alert
+  Alert,
+  AsyncStorage
 } from 'react-native';
 import Settings from '../../Config/Setting';
 import TransactionModule from '../../Module/Transaction/TransactionModule';
@@ -36,8 +37,18 @@ export default class OrderList extends Component {
       waiting: false,
       "page_num" :1,
       "page_size":50,
+      token: '',
     }
     this.setDate = this.setDate.bind(this);
+  }
+  componentDidMount() {
+    this.getToken();
+  }
+  async getToken() {
+    const data =await AsyncStorage.getItem('token');
+    this.setState({
+      token: data,
+    })
   }
   async getHistoryTransaction(page_num, page_size) {
           const pageNum = this.state.page_num;
@@ -46,30 +57,71 @@ export default class OrderList extends Component {
         this.refs.loading.startLoading();
         const startTime = this.state.startDate;
         const endTime = this.state.endDate;
-        const data = await TransactionModule.getHistoryTransaction(startTime,pageNum,endTime,pageSize);
+        const {token} = this.state
+        const data = await TransactionModule.getHistoryTransaction(token,startTime,pageNum,endTime,pageSize);
         this.refs.loading.endLoading();
           console.log(data)
           this.setState({
             list: data
           })
        }catch(error){
-         console.log(error)
-         Alert.alert(
-           "ERROR",
-           error,
-           [
-             {text: "OK", onPress: () => this.refs.loading.endLoading()},
-           ],
-           { cancelable: false }
-         )
+        if (error == 'TOKEN_EXPIRE') {
+          Alert.alert(
+            "ERROR",
+            'Token Expires, please login again.',
+            [
+              {text: 'Ok',onPress:()=>{
+                this.refs.loading.endLoading();
+                this.props.navigator.push({
+                screen: 'Login',
+                title: '',
+                navigatorStyle: {
+                  navBarHidden: true
+                },
+                passProps: {},
+                animationType: 'slide-horizontal'
+              });}},
+            ],
+            { cancelable: false }
+          )
+        } if (error == 'TOKEN_KICKED') {
+          Alert.alert(
+            "ERROR",
+            'Your account has been logged in from another device.',
+            [
+              {text: 'Ok',onPress:()=>{
+                this.refs.loading.endLoading();
+                this.props.navigator.push({
+                screen: 'Login',
+                title: '',
+                navigatorStyle: {
+                  navBarHidden: true
+                },
+                passProps: {},
+                animationType: 'slide-horizontal'
+              });}},
+            ],
+            { cancelable: false }
+          )
+        }else {
+          Alert.alert(
+            "ERROR",
+            error,
+            [
+              {text: "OK", onPress: () => this.refs.loading.endLoading()},
+            ],
+            { cancelable: false }
+          )
+        }
        }
   }
   async getTodayTransaction(page_num, page_size){
           const pageNum = this.state.page_num;
           const pageSize = this.state.page_size;
+          const {token} = this.state
           try{
             this.refs.loading.startLoading();
-            const data = await TransactionModule.getTodayTransaction(pageNum,pageSize);
+            const data = await TransactionModule.getTodayTransaction(token,pageNum,pageSize);
             this.refs.loading.endLoading();
               console.log(data)
               this.setState({
@@ -77,14 +129,54 @@ export default class OrderList extends Component {
               })
           }catch(error){
             console.log(error)
-            Alert.alert(
-              "ERROR",
-              error,
-              [
-                {text: "OK", onPress: () => this.refs.loading.endLoading()},
-              ],
-              { cancelable: false }
-            )
+            if (error == 'TOKEN_EXPIRE') {
+              Alert.alert(
+                "ERROR",
+                'Token Expires, please login again.',
+                [
+                  {text: 'Ok',onPress:()=>{
+                    this.refs.loading.endLoading();
+                    this.props.navigator.push({
+                    screen: 'Login',
+                    title: '',
+                    navigatorStyle: {
+                      navBarHidden: true
+                    },
+                    passProps: {},
+                    animationType: 'slide-horizontal'
+                  });}},
+                ],
+                { cancelable: false }
+              )
+            } if (error == 'TOKEN_KICKED') {
+              Alert.alert(
+                "ERROR",
+                'Your account has been logged in from another device.',
+                [
+                  {text: 'Ok',onPress:()=>{
+                    this.refs.loading.endLoading();
+                    this.props.navigator.push({
+                    screen: 'Login',
+                    title: '',
+                    navigatorStyle: {
+                      navBarHidden: true
+                    },
+                    passProps: {},
+                    animationType: 'slide-horizontal'
+                  });}},
+                ],
+                { cancelable: false }
+              )
+            } else {
+              Alert.alert(
+                "ERROR",
+                error,
+                [
+                  {text: "OK", onPress: () => this.refs.loading.endLoading()},
+                ],
+                { cancelable: false }
+              )
+            }
           }
   }
   render(){

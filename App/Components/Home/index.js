@@ -10,9 +10,11 @@ import {
   TextInput,
   TouchableHighlight,
   TouchableOpacity,
-  Alert
+  Alert,
+  AsyncStorage
 } from 'react-native';
 import Settings from '../../Config/Setting';
+import Loading from '../Loading';
 import HomeModule from '../../Module/Home/HomeModule';
 export default class Home extends Component {
   constructor() {
@@ -32,7 +34,8 @@ export default class Home extends Component {
   }
   async _getCompanyInfo() {
     try{
-    const data = await HomeModule.getCompanyInfo();
+    const token =await AsyncStorage.getItem('token')
+    const data = await HomeModule.getCompanyInfo(token);
     this.setState({
         companyCell: data.cell,
         companyName: data.display_name,
@@ -105,6 +108,7 @@ export default class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <Loading ref="loading" size={60}/>
         <TouchableOpacity
           disabled={this.state.waiting}  
           activeOpacity={0.4}

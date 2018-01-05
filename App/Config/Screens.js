@@ -1,5 +1,4 @@
 import { Navigation } from 'react-native-navigation';
-
 import CreateQRCode from '../Components/CreateQRCode';
 import EnterAmount from '../Components/EnterAmount';
 import EnterRefoundNumber from '../Components/EnterRefoundNumber';
@@ -35,5 +34,4 @@ export function registerScreens() {
   Navigation.registerComponent('SelectRefound', () => SelectRefound);
   Navigation.registerComponent('Transaction', () => Transaction);
   Navigation.registerComponent('Alert', () => Alert);
-
 }

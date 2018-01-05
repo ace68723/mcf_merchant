@@ -32,22 +32,24 @@ export default class Pay extends Component {
       totalAmount: props.totalAmount,
       channel: props.channel,
       outTradeNo: props.out_trade_no,
+      token: props.token,
     };
     this._goToScanQRCode = this._goToScanQRCode.bind(this);
   }
   componentDidMount() {
     this._checkOrderStatus()
+    console.log(this.state.totalAmount)
   }
   async _goToScanQRCode() {
     this.refs.loading.startLoading();
-    const {channel,title} =  this.props;
+    const {channel,title,token} =  this.props;
     let totalAmount = this.state.totalAmount;
     console.log(totalAmount);
     totalAmount = parseInt(totalAmount*100, 10);
     totalAmount = totalAmount/100;
     try{
       console.log(totalAmount);
-      const data = await PayModule.preCreateAuthpay(channel,totalAmount);
+      const data = await PayModule.preCreateAuthpay(token,channel,totalAmount);
       this.setState({out_trade_no:data});
       this.refs.loading.endLoading();
       const {out_trade_no} = data;
@@ -73,8 +75,8 @@ export default class Pay extends Component {
   
   async _checkOrderStatus(channel,outTradeNo) {
     try{
-    const {outTradeNo,channel} =this.state;
-    const data = await ScanQRCodeModule.checkOrderStatus(channel,outTradeNo);
+    const {outTradeNo,channel,token} =this.state;
+    const data = await ScanQRCodeModule.checkOrderStatus(token,channel,outTradeNo);
      if (data.status === 'SUCCESS') {
        console.log(data);
        this.props.navigator.push({
@@ -96,15 +98,53 @@ export default class Pay extends Component {
      }
       // alert('_checkOrderStatus',data);
     }catch(error){
-      console.log(error)
-      Alert.alert(
-        "ERROR",
-        error,
-        [
-          {text: 'Ok', onPress:()=>this.refs.loading.endLoading()},
-        ],
-        { cancelable: false }
-      )
+      if (error == 'TOKEN_EXPIRE') {
+        Alert.alert(
+          "ERROR",
+          'Token Expires, please login again.',
+          [
+            {text: 'Ok',onPress:()=>{
+              this.refs.loading.endLoading();
+              this.props.navigator.push({
+              screen: 'Login',
+              title: '',
+              navigatorStyle: {
+                navBarHidden: true
+              },
+              passProps: {},
+              animationType: 'slide-horizontal'
+            });}},
+          ],
+          { cancelable: false }
+        )
+      }else if(error == 'TOKEN_EXPIRE') {
+        Alert.alert(
+          "ERROR",
+          'Your account has been logged in from another device.',
+          [
+            {text: 'Ok',onPress:()=>{
+              this.props.navigator.push({
+              screen: 'Login',
+              title: '',
+              navigatorStyle: {
+                navBarHidden: true
+              },
+              passProps: {},
+              animationType: 'slide-horizontal'
+            });}},
+          ],
+          { cancelable: false }
+        )
+      }   else {
+        Alert.alert(
+          "ERROR",
+          error,
+          [
+            {text: 'Ok'},
+          ],
+          { cancelable: false }
+        )
+      }
     }
   }
   render() {

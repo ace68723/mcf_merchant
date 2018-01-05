@@ -1,12 +1,12 @@
 export default  {
-    getCompanyInfo(){
+    getCompanyInfo(token){
       const url = 'https://mcfpayapi.ca/api/v1/merchant/get_company_info/';
       let options = {
         method: 'POST',
         mode:'cors',
         headers: {
-          'Auth-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjIsInJvbGUiOjY2NiwidXNlcm5hbWUiOiJ0ZXN0QWRtaW4iLCJhY2NvdW50X2lkIjozLCJleHBpcmUiOjE1MTMyMjIzMDB9.1M0YWtQNcoHmTQOwx0ZewAsqG3yETUmiJf8BiVBU56A',
           'Content-Type': 'application/json',
+          'Auth-Token': token
         }
     }
       // options.headers = Object.assign(options.headers,{

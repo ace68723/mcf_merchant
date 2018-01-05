@@ -11,12 +11,14 @@ import {
   Animated,
   Easing,
   ActivityIndicator,
-  Alert
+  Alert,
+  AsyncStorage
 } from 'react-native';
 import Camera from 'react-native-camera';
 import TimerMixin from 'react-timer-mixin';
 import Settings from '../../Config/Setting';
 import ScanQRCodeModule from '../../Module/ScanQRCode/ScanQRCodeModule';
+import DeviceInfo from 'react-native-device-info';
 import Loading from '../Loading';
 // import Camera from 'react-native-camera';
 export default class ScanQRCode extends Component {
@@ -36,20 +38,27 @@ export default class ScanQRCode extends Component {
         showCamera: true,
         cameraType: Camera.constants.Type.back,
         isShowing: false,
+        token: '',
     };
     this._onBarCodeRead = this._onBarCodeRead.bind(this);
     this._createAuthpay = this._createAuthpay.bind(this);
     this._goToCreateQRCode = this._goToCreateQRCode.bind(this);
   }
   componentDidMount() {
-    console.log(this.props)
     this.startAnimation();
+    this.getToken();
   }
-  
+  async getToken() {
+    const data =await AsyncStorage.getItem('token');
+    this.setState({
+      token: data,
+    })
+  }
   async _goToCreateQRCode() {
     try {
       this.refs.loading.startLoading();
       const {channel,title,out_trade_no} =  this.props;
+      const {token} = this.state
       let totalAmount = this.props.totalAmount;
       totalAmount = parseInt(totalAmount*100, 10);
       console.log(channel,totalAmount)
@@ -57,13 +66,13 @@ export default class ScanQRCode extends Component {
         'https://mcfpayapi.ca/api/v1/merchant/create_order/',{
           method: 'POST',
           headers: {
-            'Auth-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEsInJvbGUiOjEwMSwidXNlcm5hbWUiOiJ0ZXN0VXNlciIsImFjY291bnRfaWQiOjMsImV4cGlyZSI6MTUxMzIyMjM0Nn0.px6eP3IIj8-jwy-cXmGJziPBCQWUIOJU7iY1-5-EVGE',
+            'Auth-Token': token,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             'vendor_channel': channel,
             'total_fee_currency': 'CAD',
-            'device_id':'aaaa',
+            'device_id':DeviceInfo.getSerialNumber(),
             'total_fee_in_cent':totalAmount
           }),
         });
@@ -73,15 +82,61 @@ export default class ScanQRCode extends Component {
       if (responseJson.ev_error == '0') {
         let codeUrl = responseJson.ev_data.code_url;
         let out_trade_no = responseJson.ev_data.out_trade_no
-        totalAmount = totalAmount/100;
+        let totalAmount = responseJson.ev_data.total_fee_in_cent / 100;
+        console.log(totalAmount)
         this.props.navigator.push({
           screen: 'CreateQRCode',
           title: 'QR Code',
-          passProps: {codeUrl,totalAmount,out_trade_no,channel},
+          passProps: {token,codeUrl,totalAmount,out_trade_no,channel},
           animationType: 'slide-horizontal'
         });
-      }
-      return responseJson.ev_data;
+        return responseJson.ev_data;
+      } else if(responseJson.ev_error === 10010) {
+        Alert.alert(
+          "ERROR",
+          'Token Expires, please login again.',
+          [
+            {text: 'Ok',onPress:()=>{
+              this.props.navigator.push({
+              screen: 'Login',
+              title: '',
+              navigatorStyle: {
+                navBarHidden: true
+              },
+              passProps: {},
+              animationType: 'slide-horizontal'
+            });}},
+          ],
+          { cancelable: false }
+        )
+      }  else if(responseJson.ev_error === 10011) {
+        Alert.alert(
+          "ERROR",
+          'Your account has been logged in from another device.',
+          [
+            {text: 'Ok',onPress:()=>{
+              this.props.navigator.push({
+              screen: 'Login',
+              title: '',
+              navigatorStyle: {
+                navBarHidden: true
+              },
+              passProps: {},
+              animationType: 'slide-horizontal'
+            });}},
+          ],
+          { cancelable: false }
+        )
+      }  else {
+        Alert.alert(
+          "ERROR",
+          'Invalid QR Code',
+          [
+            {text: 'Ok', onPress:()=>this.refs.loading.endLoading()},
+          ],
+          { cancelable: false }
+        )
+      }  
     } catch (error) {
       console.error(error);
   }
@@ -89,29 +144,69 @@ export default class ScanQRCode extends Component {
   async _createAuthpay(auth_code) {
        try{
          const {channel,totalAmount,out_trade_no} = this.props;
+         const {token} = this.state
          console.log(out_trade_no)
          const outTradeNo = out_trade_no;
          const authCode = auth_code;
-         const data = await ScanQRCodeModule.createAuthpay(channel, totalAmount, outTradeNo, authCode);
+         const data = await ScanQRCodeModule.createAuthpay(token,channel, totalAmount, outTradeNo, authCode);
          console.log(data);
          this._checkOrderStatus(channel,outTradeNo);
          this.refs.loading.endLoading();
        }catch(error){
           // alert('_createAuthpay error',error);
          console.log(error)
-         Alert.alert(
-           "ERROR",
-           error,
-           [
-             {text: 'Ok', onPress:()=>this.refs.loading.endLoading()},
-           ],
-           { cancelable: false }
-         )
+         if (error == 'TOKEN_EXPIRE') {
+            Alert.alert(
+              "ERROR",
+              'Token Expires, please login again.',
+              [
+                {text: 'Ok',onPress:()=>{
+                  this.props.navigator.push({
+                  screen: 'Login',
+                  title: '',
+                  navigatorStyle: {
+                    navBarHidden: true
+                  },
+                  passProps: {},
+                  animationType: 'slide-horizontal'
+                });}},
+              ],
+              { cancelable: false }
+            )
+          } else if(error == 'TOKEN_EXPIRE') {
+            Alert.alert(
+              "ERROR",
+              'Your account has been logged in from another device.',
+              [
+                {text: 'Ok',onPress:()=>{
+                  this.props.navigator.push({
+                  screen: 'Login',
+                  title: '',
+                  navigatorStyle: {
+                    navBarHidden: true
+                  },
+                  passProps: {},
+                  animationType: 'slide-horizontal'
+                });}},
+              ],
+              { cancelable: false }
+            )
+          }   else {
+            Alert.alert(
+              "ERROR",
+              error,
+              [
+                {text: 'Ok'},
+              ],
+              { cancelable: false }
+            )
+          }
        }
   }
   async _checkOrderStatus(channel,outTradeNo) {
        try{
-       const data = await ScanQRCodeModule.checkOrderStatus(channel,outTradeNo);
+       const {token} = this.state
+       const data = await ScanQRCodeModule.checkOrderStatus(token,channel,outTradeNo);
         if (data.status === 'SUCCESS') {
           console.log(data);
           this.props.navigator.push({
@@ -134,7 +229,53 @@ export default class ScanQRCode extends Component {
         }
          // alert('_checkOrderStatus',data);
        }catch(error){
-         console.log(error)
+        if (error == 'TOKEN_EXPIRE') {
+          Alert.alert(
+            "ERROR",
+            'Token Expires, please login again.',
+            [
+              {text: 'Ok',onPress:()=>{
+                this.refs.loading.endLoading();
+                this.props.navigator.push({
+                screen: 'Login',
+                title: '',
+                navigatorStyle: {
+                  navBarHidden: true
+                },
+                passProps: {},
+                animationType: 'slide-horizontal'
+              });}},
+            ],
+            { cancelable: false }
+          )
+        }else if(error == 'TOKEN_KICKED') {
+          Alert.alert(
+            "ERROR",
+            'Your account has been logged in from another device.',
+            [
+              {text: 'Ok',onPress:()=>{
+                this.props.navigator.push({
+                screen: 'Login',
+                title: '',
+                navigatorStyle: {
+                  navBarHidden: true
+                },
+                passProps: {},
+                animationType: 'slide-horizontal'
+              });}},
+            ],
+            { cancelable: false }
+          )
+        }   else {
+          Alert.alert(
+            "ERROR",
+            error,
+            [
+              {text: 'Ok', onPress:()=>this.refs.loading.endLoading()},
+            ],
+            { cancelable: false }
+          )
+        }
        }
   }
 

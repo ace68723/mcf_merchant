@@ -10,6 +10,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
 } from 'react-native';
+import Loading from '../Loading';
 import Settings from '../../Config/Setting';
 export default class EnterAmount extends Component {
   static navigatorStyle = {
@@ -66,6 +67,7 @@ export default class EnterAmount extends Component {
   render() {
     return (
       <View style={styles.container}>
+          <Loading ref="loading" size={60}/>
           <View
             style={{
               backgroundColor:'white',

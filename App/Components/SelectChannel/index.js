@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Settings from '../../Config/Setting';
+import Loading from '../Loading';
 export default class Home extends Component {
   static navigatorStyle = {
     navBarTextColor:"#c49a6c",
@@ -48,6 +49,7 @@ export default class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
+          <Loading ref="loading" size={60}/>
           <TouchableOpacity
           disabled = {this.state.waiting}
           style={{
