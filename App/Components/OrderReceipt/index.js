@@ -8,10 +8,13 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  Dimensions
 } from 'react-native';
 import QRCode from './QRCode'
 import Settings from '../../Config/Setting';
 import PrintModule from '../../Module/Print/PrintModule'
+const {height, width} = Dimensions.get('window');
+
 export default class Pay extends Component {
   static navigatorStyle = {
     navBarTextColor:"#c49a6c",
@@ -34,6 +37,7 @@ export default class Pay extends Component {
         display: '',
     };
     this._pressScan = this._pressScan.bind(this);
+    this.goBackHome = this.goBackHome.bind(this);
     this._calculateRate = this._calculateRate.bind(this);
     // this._transTime=this._transTime.bind(this);
   }
@@ -51,6 +55,17 @@ export default class Pay extends Component {
         display: 'Ali Pay',
      })
     }
+  }
+  goBackHome() {
+    this.props.navigator.push({
+      screen: 'Home',
+      title: 'Home',
+      navigatorStyle: {
+        navBarHidden: true
+      },
+      passProps: {},
+      animationType: 'slide-horizontal'
+    })
   }
   _pressScan(){
     let method;
@@ -82,10 +97,33 @@ export default class Pay extends Component {
   render() {
     return (
       <View style={styles.container}>
-
+        <View style={{
+          backgroundColor:'#2f3038',
+          flex:0.08,
+          alignItems: 'center',
+          flexDirection: 'row'
+        }}>
+            <TouchableOpacity onPress={this.goBackHome}
+            style={{
+              position:'absolute',
+              height:Settings.getY(34),
+              width:Settings.getY(24),
+              left:0.05*width}}>
+                  <Image 
+                      source={require('./image/back.png')}
+                    />
+            </TouchableOpacity>
+            <Text style={{
+                  fontSize:20,
+                  color:'#c49a6c',
+                  position:'absolute',
+                  left:0.34*width}}>
+              Order Receipt
+            </Text>
+        </View>
         <View style={{
           backgroundColor:'#F4F4F4',
-          flex:1,
+          flex:0.92,
           alignItems: 'center',
           borderColor:'#D1D3D4',
           borderWidth:1

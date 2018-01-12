@@ -211,6 +211,9 @@ export default class ScanQRCode extends Component {
           console.log(data);
           this.props.navigator.push({
             screen: 'OrderReceipt',
+            navigatorStyle: {
+              navBarHidden: true
+            },
             passProps: {
                 merchantName: data.merchantName,
                 merchantAddress: data.merchantAddress,

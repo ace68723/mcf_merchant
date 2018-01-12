@@ -214,6 +214,7 @@ export default class ScanQRCode extends Component {
         this.props.navigator.push({
           screen: 'RefoundReceipt',
           navigatorStyle: {
+            navBarHidden: true
           },
           title: "Refund Receipt",
           passProps: eo_data,

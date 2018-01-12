@@ -32,6 +32,10 @@ export default class Home extends Component {
   componentWillMount() {
     this._getCompanyInfo();
   }
+  componentDidMount() {
+  
+  }
+  
   async _getCompanyInfo() {
     try{
     const token =await AsyncStorage.getItem('token')
@@ -40,6 +44,7 @@ export default class Home extends Component {
         companyCell: data.cell,
         companyName: data.display_name,
     })
+    
       // alert('_checkOrderStatus',data);
     }catch(error){
       console.log(error)

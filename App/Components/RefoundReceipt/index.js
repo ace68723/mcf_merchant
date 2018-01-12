@@ -8,16 +8,19 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  Dimensions
 } from 'react-native';
 import Settings from '../../Config/Setting';
 import PrintModule from '../../Module/Print/PrintModule'
 import Loading from '../Loading';
+const {height, width} = Dimensions.get('window');
+
 export default class Pay extends Component {
-  static navigatorStyle = {
-    navBarTextColor:"#c49a6c",
-    navBarBackgroundColor:"#2f3038",
-    navBarButtonColor:"#c49a6c"
-  }
+  // static navigatorStyle = {
+  //   navBarTextColor:"#c49a6c",
+  //   navBarBackgroundColor:"#2f3038",
+  //   navBarButtonColor:"#c49a6c"
+  // }
   constructor(props)
   {
     super(props);
@@ -31,7 +34,7 @@ export default class Pay extends Component {
       totalAmount:props.totalAmount,
         };
       this._pressScan=this._pressScan.bind(this);
-
+      this.goBackHome = this.goBackHome.bind(this);
   }
   
   _pressScan(){
@@ -54,14 +57,48 @@ export default class Pay extends Component {
     }
     PrintModule.printContent(data);
   }
-
+  goBackHome() {
+    this.props.navigator.push({
+      screen: 'Home',
+      title: 'Home',
+      navigatorStyle: {
+        navBarHidden: true
+      },
+      passProps: {},
+      animationType: 'slide-horizontal'
+    })
+  }
   render() {
     return (
       <View style={styles.container}>
         <Loading ref="loading" size={60}/>
         <View style={{
+          backgroundColor:'#2f3038',
+          flex:0.08,
+          alignItems: 'center',
+          flexDirection: 'row'
+        }}>
+            <TouchableOpacity onPress={this.goBackHome}
+            style={{
+              position:'absolute',
+              height:Settings.getY(34),
+              width:Settings.getY(24),
+              left:0.05*width}}>
+                  <Image 
+                      source={require('./image/back.png')}
+                    />
+            </TouchableOpacity>
+            <Text style={{
+                  fontSize:20,
+                  color:'#c49a6c',
+                  position:'absolute',
+                  left:0.34*width}}>
+              Refund Receipt
+            </Text>
+        </View>
+        <View style={{
           backgroundColor:'#F4F4F4',
-          flex:1,
+          flex:0.92,
           alignItems: 'center',
           borderColor:'#D1D3D4',
           borderWidth:1,

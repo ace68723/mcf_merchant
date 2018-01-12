@@ -19,12 +19,12 @@ import Settings from '../../Config/Setting'
 import Loading from '../Loading';
 
 
-export default class Login extends Component<{}> {
+export default class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { merchantId:'',
-                   username:'',
-                   password:'',
+    this.state = { merchantId:'testMerchant',
+                   username:'testAdmin',
+                   password:'admin123*',
                    isShowing: false,
                  };
 
@@ -35,7 +35,6 @@ export default class Login extends Component<{}> {
   }
 
   async login(merchantId, username, password){
-
        try{
           this.refs.loading.startLoading();
           const data = await LoginModule.login(merchantId, username, password);
@@ -138,8 +137,7 @@ export default class Login extends Component<{}> {
         }}
         activeOpacity={0.4}
         onPress={() => this.login(this.state.merchantId, this.state.username, this.state.password)}>
-        <Text style={{fontSize:28,color:'#C49A6C'}}
-        >
+        <Text style={{fontSize:28,color:'#C49A6C'}}>
         Login
         </Text>
       </TouchableOpacity>

@@ -134,6 +134,7 @@ export default class EnterAmount extends Component {
           }),
         });
       let responseJson = await response.json();
+      console.log(responseJson)
       const refoundInfo = responseJson.ev_data;
          const name = refoundInfo.merchant_name;
          const refId = refoundInfo.ref_id;
@@ -145,10 +146,11 @@ export default class EnterAmount extends Component {
       this.props.navigator.push({
         screen: 'RefoundReceipt',
         navigatorStyle: {
+          navBarHidden: true
         },
         title: "Refund Receipt",
         passProps: eo_data,
-        animationType: 'slide-horizontal'
+        animationType: 'slide-horizontal',
       });
       console.log(eo_data);
 //      this.setState({exchangeRate:responseJson.ev_data.exchange_rate})
