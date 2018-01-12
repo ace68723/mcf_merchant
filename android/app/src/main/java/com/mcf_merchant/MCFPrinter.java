@@ -31,7 +31,7 @@ import static android.R.id.message;
  * Created by aiden on 2017-09-12.
  */
 
-public class customAndroid extends ReactContextBaseJavaModule {
+public class MCFPrinter extends ReactContextBaseJavaModule {
     private IWoyouService woyouService;
     private BitmapUtils bitMapUtils;
     // 缺纸异常
@@ -68,7 +68,7 @@ public class customAndroid extends ReactContextBaseJavaModule {
     };
     private static final String TAG = "SunmiInnerPrinterModule";
 
-    public customAndroid(ReactApplicationContext reactContext) {
+    public MCFPrinter(ReactApplicationContext reactContext) {
         super(reactContext);
 
         Intent intent = new Intent();
@@ -90,19 +90,13 @@ public class customAndroid extends ReactContextBaseJavaModule {
         mFilter.addAction(FIRMWARE_UPDATING_ACITON);
 
         getReactApplicationContext().registerReceiver(receiver, mFilter);
-
-        Log.d("PrinterReceiver", "------------ init ");
     }
 
 
-      private PrinterReceiver receiver = new PrinterReceiver();
+    private PrinterReceiver receiver = new PrinterReceiver();
     @Override
     public String getName() {
-        return "customAndroid";
-    }
-    @ReactMethod
-    public void show() {
-        Toast.makeText(getReactApplicationContext(), "11111", Toast.LENGTH_LONG).show();
+        return "MCFPrinter";
     }
     @ReactMethod                                                            //rn方法 简单打印text
     public void printOriginalText(String text,final Promise p){

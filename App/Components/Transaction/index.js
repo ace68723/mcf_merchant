@@ -12,7 +12,7 @@ import {
   AsyncStorage
 } from 'react-native';
 import Settings from '../../Config/Setting';
-import TransactionModule from '../../Module/Transaction/TransactionModule';
+import TransactionModule from '../../Modules/Transaction/TransactionModule';
 import Loading from '../Loading';
 
 const {height, width} = Dimensions.get('window');

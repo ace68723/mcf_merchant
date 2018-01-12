@@ -17,7 +17,7 @@ import {
 import Camera from 'react-native-camera';
 import TimerMixin from 'react-timer-mixin';
 import Settings from '../../Config/Setting';
-import ScanQRCodeModule from '../../Module/ScanQRCode/ScanQRCodeModule';
+import ScanQRCodeModule from '../../Modules/ScanQRCode/ScanQRCodeModule';
 import DeviceInfo from 'react-native-device-info';
 import Loading from '../Loading';
 // import Camera from 'react-native-camera';

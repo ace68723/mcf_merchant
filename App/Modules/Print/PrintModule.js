@@ -52,41 +52,41 @@ export default  {
          try {
 
 
-            await NativeModules.customAndroid.printOriginalText("        ");
+            await NativeModules.MCFPrinter.printOriginalText("        ");
 
-             await NativeModules.customAndroid.printBitmap(logobase64, 200/*width*/, 150/*height*/);
+             await NativeModules.MCFPrinter.printBitmap(logobase64, 200/*width*/, 150/*height*/);
 
-             await NativeModules.customAndroid.lineWrap(2);
+             await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.customAndroid.printOriginalText(data.merchantName);
+             await NativeModules.MCFPrinter.printOriginalText(data.merchantName);
 
-             await NativeModules.customAndroid.lineWrap(1);
+             await NativeModules.MCFPrinter.lineWrap(1);
 
-             await NativeModules.customAndroid.printOriginalText(data.merchantAddress);
+             await NativeModules.MCFPrinter.printOriginalText(data.merchantAddress);
 
-             await NativeModules.customAndroid.lineWrap(1);
-             await NativeModules.customAndroid.printOriginalText(data.merchantPhoneNumber);
-             await NativeModules.customAndroid.lineWrap(1);
-             await NativeModules.customAndroid.printOriginalText("________________________________");
-             await NativeModules.customAndroid.lineWrap(2);
-             await NativeModules.customAndroid.printOriginalText("#"+data.refId);
-             await NativeModules.customAndroid.lineWrap(1);
-             await NativeModules.customAndroid.printOriginalText("Date: "+data.date);
-             await NativeModules.customAndroid.lineWrap(1);
-             await NativeModules.customAndroid.printOriginalText("Channel: "+data.method);
-             await NativeModules.customAndroid.lineWrap(1);
-             await NativeModules.customAndroid.printOriginalText("________________________________");
-             await NativeModules.customAndroid.lineWrap(2);
+             await NativeModules.MCFPrinter.lineWrap(1);
+             await NativeModules.MCFPrinter.printOriginalText(data.merchantPhoneNumber);
+             await NativeModules.MCFPrinter.lineWrap(1);
+             await NativeModules.MCFPrinter.printOriginalText("________________________________");
+             await NativeModules.MCFPrinter.lineWrap(2);
+             await NativeModules.MCFPrinter.printOriginalText("#"+data.refId);
+             await NativeModules.MCFPrinter.lineWrap(1);
+             await NativeModules.MCFPrinter.printOriginalText("Date: "+data.date);
+             await NativeModules.MCFPrinter.lineWrap(1);
+             await NativeModules.MCFPrinter.printOriginalText("Channel: "+data.method);
+             await NativeModules.MCFPrinter.lineWrap(1);
+             await NativeModules.MCFPrinter.printOriginalText("________________________________");
+             await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.customAndroid.printOriginalText("Exchange Rate: "+data.rate);
-             await NativeModules.customAndroid.lineWrap(1);
+             await NativeModules.MCFPrinter.printOriginalText("Exchange Rate: "+data.rate);
+             await NativeModules.MCFPrinter.lineWrap(1);
 
-             await NativeModules.customAndroid.printOriginalText("Amount: $"+data.totalAmount);
-             await NativeModules.customAndroid.lineWrap(1);
+             await NativeModules.MCFPrinter.printOriginalText("Amount: $"+data.totalAmount);
+             await NativeModules.MCFPrinter.lineWrap(1);
 
-             await NativeModules.customAndroid.printOriginalText("CNY Amount: ￥"+data.CNYamount);
-             await NativeModules.customAndroid.lineWrap(2);
-             await NativeModules.customAndroid.printQr(data.QRCode,10,1)
+             await NativeModules.MCFPrinter.printOriginalText("CNY Amount: ￥"+data.CNYamount);
+             await NativeModules.MCFPrinter.lineWrap(2);
+             await NativeModules.MCFPrinter.printQr(data.QRCode,10,1)
 
 
 
@@ -104,38 +104,38 @@ export default  {
          try {
 
 
-            await NativeModules.customAndroid.printOriginalText("        ");
+            await NativeModules.MCFPrinter.printOriginalText("        ");
 
-             await NativeModules.customAndroid.printBitmap(logobase64, 200/*width*/, 150/*height*/);
+             await NativeModules.MCFPrinter.printBitmap(logobase64, 200/*width*/, 150/*height*/);
 
-             await NativeModules.customAndroid.lineWrap(2);
+             await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.customAndroid.printOriginalText(data.merchantName);
+             await NativeModules.MCFPrinter.printOriginalText(data.merchantName);
 
-             await NativeModules.customAndroid.lineWrap(2);
+             await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.customAndroid.printOriginalText(data.merchantAddress);
+             await NativeModules.MCFPrinter.printOriginalText(data.merchantAddress);
 
-             await NativeModules.customAndroid.lineWrap(1);
-             await NativeModules.customAndroid.printOriginalText(data.merchantPhoneNumber);
-             await NativeModules.customAndroid.lineWrap(2);
+             await NativeModules.MCFPrinter.lineWrap(1);
+             await NativeModules.MCFPrinter.printOriginalText(data.merchantPhoneNumber);
+             await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.customAndroid.printOriginalText("Date: "+data.start+" ~ "+data.end);
-             await NativeModules.customAndroid.lineWrap(1);
-             await NativeModules.customAndroid.printOriginalText("________________________________");
-             await NativeModules.customAndroid.lineWrap(2);
+             await NativeModules.MCFPrinter.printOriginalText("Date: "+data.start+" ~ "+data.end);
+             await NativeModules.MCFPrinter.lineWrap(1);
+             await NativeModules.MCFPrinter.printOriginalText("________________________________");
+             await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.customAndroid.printOriginalText("No.   Time                Amount");
+             await NativeModules.MCFPrinter.printOriginalText("No.   Time                Amount");
 
-             await NativeModules.customAndroid.lineWrap(2);
+             await NativeModules.MCFPrinter.lineWrap(2);
 
              for (var i=0;i<data.transaction.length;i++)
              {
-               await NativeModules.customAndroid.printOriginalText(data.transaction[i].number+"  "+data.transaction[i].time+" $"+data.transaction[i].totalAmount);
-               await NativeModules.customAndroid.lineWrap(2);
+               await NativeModules.MCFPrinter.printOriginalText(data.transaction[i].number+"  "+data.transaction[i].time+" $"+data.transaction[i].totalAmount);
+               await NativeModules.MCFPrinter.lineWrap(2);
              }
 
-             await NativeModules.customAndroid.lineWrap(5);
+             await NativeModules.MCFPrinter.lineWrap(5);
 
 
 
@@ -155,33 +155,33 @@ export default  {
          try {
 
 
-            await NativeModules.customAndroid.printOriginalText("        ");
+            await NativeModules.MCFPrinter.printOriginalText("        ");
 
-             await NativeModules.customAndroid.printBitmap(logobase64, 200/*width*/, 150/*height*/);
+             await NativeModules.MCFPrinter.printBitmap(logobase64, 200/*width*/, 150/*height*/);
 
-             await NativeModules.customAndroid.lineWrap(2);
+             await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.customAndroid.printOriginalText(data.merchantName);
-             await NativeModules.customAndroid.lineWrap(1);
-             await NativeModules.customAndroid.printOriginalText("Date: "+data.date);
+             await NativeModules.MCFPrinter.printOriginalText(data.merchantName);
+             await NativeModules.MCFPrinter.lineWrap(1);
+             await NativeModules.MCFPrinter.printOriginalText("Date: "+data.date);
 
-             await NativeModules.customAndroid.lineWrap(2);
+             await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.customAndroid.printOriginalText("Order Number:");
+             await NativeModules.MCFPrinter.printOriginalText("Order Number:");
 
-             await NativeModules.customAndroid.lineWrap(1);
+             await NativeModules.MCFPrinter.lineWrap(1);
 
-             await NativeModules.customAndroid.printOriginalText(data.refId);
+             await NativeModules.MCFPrinter.printOriginalText(data.refId);
 
-             await NativeModules.customAndroid.lineWrap(2);
+             await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.customAndroid.printOriginalText("Amount: $"+data.totalAmount);
+             await NativeModules.MCFPrinter.printOriginalText("Amount: $"+data.totalAmount);
 
 
-             await NativeModules.customAndroid.lineWrap(2);
+             await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.customAndroid.printOriginalText("Refunded");
-             await NativeModules.customAndroid.lineWrap(3);
+             await NativeModules.MCFPrinter.printOriginalText("Refunded");
+             await NativeModules.MCFPrinter.lineWrap(3);
 
 
 

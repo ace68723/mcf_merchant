@@ -15,7 +15,7 @@ import {
   Alert,
   AsyncStorage
 } from 'react-native';
-import PayModule from '../../Module/Pay/PayModule';
+import PayModule from '../../Modules/Pay/PayModule';
 import Settings from '../../Config/Setting';
 import Loading from '../Loading';
 import DeviceInfo from 'react-native-device-info';

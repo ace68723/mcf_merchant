@@ -14,7 +14,7 @@ import {
   Alert,
   AsyncStorage
 } from 'react-native';
-import LoginModule from '../../Module/Login/LoginModule';
+import LoginModule from '../../Modules/Login/LoginModule';
 import Settings from '../../Config/Setting'
 import Loading from '../Loading';
 
@@ -63,7 +63,7 @@ export default class Login extends Component {
           )
          } else {
            return
-         } 
+         }
        }
   }
 

@@ -6,6 +6,7 @@ import java.util.List;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.reactnativenavigation.NavigationApplication;
+import io.realm.react.RealmReactPackage;
 
 public class MainApplication extends NavigationApplication {
   @Override
@@ -20,7 +21,8 @@ public class MainApplication extends NavigationApplication {
     return Arrays.<ReactPackage>asList(
             new RCTCameraPackage(),
             new RNDeviceInfo(),
-            new customPackage()
+            new customPackage(),
+            new RealmReactPackage()
     );
   }
 

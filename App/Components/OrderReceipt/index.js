@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import QRCode from './QRCode'
 import Settings from '../../Config/Setting';
-import PrintModule from '../../Module/Print/PrintModule'
+import PrintModule from '../../Modules/Print/PrintModule'
 const {height, width} = Dimensions.get('window');
 
 export default class Pay extends Component {

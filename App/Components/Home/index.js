@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import Settings from '../../Config/Setting';
 import Loading from '../Loading';
-import HomeModule from '../../Module/Home/HomeModule';
+import HomeModule from '../../Modules/Home/HomeModule';
 export default class Home extends Component {
   constructor() {
     super();
@@ -33,9 +33,9 @@ export default class Home extends Component {
     this._getCompanyInfo();
   }
   componentDidMount() {
-  
+
   }
-  
+
   async _getCompanyInfo() {
     try{
     const token =await AsyncStorage.getItem('token')
@@ -44,7 +44,7 @@ export default class Home extends Component {
         companyCell: data.cell,
         companyName: data.display_name,
     })
-    
+
       // alert('_checkOrderStatus',data);
     }catch(error){
       console.log(error)
@@ -115,7 +115,7 @@ export default class Home extends Component {
       <View style={styles.container}>
         <Loading ref="loading" size={60}/>
         <TouchableOpacity
-          disabled={this.state.waiting}  
+          disabled={this.state.waiting}
           activeOpacity={0.4}
           onPress={this._goSelectChannel}
           style={{
@@ -158,7 +158,7 @@ export default class Home extends Component {
         </TouchableOpacity>
 
         <TouchableOpacity
-          disabled={this.state.waiting}  
+          disabled={this.state.waiting}
           activeOpacity={0.4}
           onPress={this._goRefund}
           style={{
@@ -201,7 +201,7 @@ export default class Home extends Component {
         </TouchableOpacity>
 
         <TouchableOpacity
-          disabled={this.state.waiting}  
+          disabled={this.state.waiting}
           activeOpacity={0.4}
           onPress={this._goTransaction}
           style={{
@@ -246,7 +246,7 @@ export default class Home extends Component {
         </TouchableOpacity>
 
         <TouchableOpacity
-          disabled={this.state.waiting}  
+          disabled={this.state.waiting}
           activeOpacity={0.4}
           onPress={this._logout}
           style={{

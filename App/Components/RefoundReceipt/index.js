@@ -11,7 +11,7 @@ import {
   Dimensions
 } from 'react-native';
 import Settings from '../../Config/Setting';
-import PrintModule from '../../Module/Print/PrintModule'
+import PrintModule from '../../Modules/Print/PrintModule'
 import Loading from '../Loading';
 const {height, width} = Dimensions.get('window');
 

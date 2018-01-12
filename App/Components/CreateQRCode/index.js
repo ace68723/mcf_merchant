@@ -13,10 +13,10 @@ import {
 } from 'react-native';
 import QRCode from './QRCode';
 import TimerMixin from 'react-timer-mixin';
-import ScanQRCodeModule from '../../Module/ScanQRCode/ScanQRCodeModule';
+import ScanQRCodeModule from '../../Modules/ScanQRCode/ScanQRCodeModule';
 import Loading from '../Loading';
 import Settings from '../../Config/Setting';
-import PayModule from '../../Module/Pay/PayModule';
+import PayModule from '../../Modules/Pay/PayModule';
 export default class Pay extends Component {
   mixins: [TimerMixin]
   static navigatorStyle = {
