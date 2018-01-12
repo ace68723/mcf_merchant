@@ -58,7 +58,7 @@ export default class Pay extends Component {
     PrintModule.printContent(data);
   }
   goBackHome() {
-    this.props.navigator.push({
+    this.props.navigator.resetTo({
       screen: 'Home',
       title: 'Home',
       navigatorStyle: {
@@ -66,7 +66,7 @@ export default class Pay extends Component {
       },
       passProps: {},
       animationType: 'slide-horizontal'
-    })
+    });
   }
   render() {
     return (
@@ -81,10 +81,12 @@ export default class Pay extends Component {
             <TouchableOpacity onPress={this.goBackHome}
             style={{
               position:'absolute',
-              height:Settings.getY(34),
-              width:Settings.getY(24),
+              alignItems:'center',
+              justifyContent: 'center',
+              height: '100%',
               left:0.05*width}}>
-                  <Image 
+                  <Image style = {{height:Settings.getY(34),
+              width:Settings.getY(24)}}
                       source={require('./image/back.png')}
                     />
             </TouchableOpacity>
