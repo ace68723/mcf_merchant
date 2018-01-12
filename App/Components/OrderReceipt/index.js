@@ -57,15 +57,15 @@ export default class Pay extends Component {
     }
   }
   goBackHome() {
-    this.props.navigator.push({
-      screen: 'Home',
-      title: 'Home',
-      navigatorStyle: {
-        navBarHidden: true
-      },
-      passProps: {},
-      animationType: 'slide-horizontal'
-    })
+    this.props.navigator.resetTo({
+        screen: 'Home',
+        title: 'Home',
+        navigatorStyle: {
+          navBarHidden: true
+        },
+        passProps: {},
+        animationType: 'slide-horizontal'
+      });
   }
   _pressScan(){
     let method;
@@ -109,7 +109,7 @@ export default class Pay extends Component {
               height:Settings.getY(34),
               width:Settings.getY(24),
               left:0.05*width}}>
-                  <Image 
+                  <Image
                       source={require('./image/back.png')}
                     />
             </TouchableOpacity>
@@ -232,7 +232,7 @@ export default class Pay extends Component {
                   fontSize:16,
                   color:'#939598',
                   marginBottom:5}}>
-                  Rate: 
+                  Rate:
                 </Text>
                 <Text style={{
                   marginLeft:Settings.getX(10),

@@ -42,13 +42,13 @@ export default class Login extends Component {
           data =await AsyncStorage.getItem('token')
           console.log(data)
           this.refs.loading.endLoading();
-          this.props.navigator.push({
-              screen: 'Home',
-              navigatorStyle: {
-                navBarHidden: true
-              },
-              passProps: {},
-              animationType: 'slide-down'
+          this.props.navigator.resetTo({
+            screen: 'Home',
+            navigatorStyle: {
+              navBarHidden: true
+            },
+            passProps: {},
+            animationType: 'slide-down'
             });
        }catch(error){
          if(error == 'LOGIN_FAIL') {
