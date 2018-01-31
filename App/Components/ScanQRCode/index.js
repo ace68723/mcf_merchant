@@ -136,7 +136,7 @@ export default class ScanQRCode extends Component {
           ],
           { cancelable: false }
         )
-      }  
+      }
     } catch (error) {
       console.error(error);
   }
@@ -342,7 +342,7 @@ export default class ScanQRCode extends Component {
             {this._renderCamera()}
 
             </View>
-            <TouchableOpacity activeOpacity={0.4} 
+            <TouchableOpacity activeOpacity={0.4}
             onPress={this._goToCreateQRCode}>
           <View style={{
             alignItems:'center',

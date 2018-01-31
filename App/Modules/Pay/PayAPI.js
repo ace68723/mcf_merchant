@@ -1,5 +1,5 @@
 export default  {
-  preCreateAuthpay(token,channel,amount,device_id){
+  preCreateAuthpay(token,channel,amount,device_id,tipAmount){
     const url = 'https://mcfpayapi.ca/api/v1/merchant/precreate_authpay/';
     let options = {
         method: 'POST',

@@ -58,5 +58,22 @@ export default  {
       throw error
     }
 
+  },
+  async getTodaySummary(token){
+    try{
+      const todaySummaryInfo = await TransactionAPI.getTodaySummary(token);
+      console.log(todaySummaryInfo)
+      if(todaySummaryInfo.ev_error == "0"){
+          const eo_data = todaySummaryInfo.ev_data
+          return eo_data;
+      }else{
+        const errorMessage = todaySummaryInfo.ev_message;
+        throw errorMessage
+      }
+    }
+    catch (error) {
+      console.log(error);
+      throw error
+    }
   }
 }

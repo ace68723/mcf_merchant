@@ -82,12 +82,16 @@ export default class Home extends Component {
   }
   _goTransaction() {
     this.setState({waiting: true});
+    const {companyName, companyCell} = this.state;
     this.props.navigator.push({
        screen: 'Transaction',
        navigatorStyle: {
        },
        title: "Transaction",
-       passProps: {},
+       passProps: {
+         companyName,
+         companyCell,
+       },
        animationType: 'slide-horizontal'
      });
      setTimeout(()=> {

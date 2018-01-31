@@ -21,7 +21,7 @@ export default class EnterAmount extends Component {
   constructor(props)
   {
     super(props);
-    this.state = { 
+    this.state = {
       enterAmount: "",
       waiting: false,
     };
@@ -54,14 +54,31 @@ export default class EnterAmount extends Component {
   }
   _roundTwoDig(num)
   {
-    var total=this.state.enterAmount;
-    var loca=total.length;
+
+    let total=this.state.enterAmount;
+    let loca=total.length;
+    // let numLength = num.length;
+    // let floatIndex = num.indexOf('.');
+    // if(num.length>loca){
+    //   if(numLength > 2){
+    //     if(floatIndex == -1){
+    //       num = num.substr(0, numLength - 2)+"."+num.substr(numLength - 2, 2);
+    //     }else{
+    //       if((numLength - floatIndex) != 3 ){
+    //         num = num.slice(0, floatIndex)+num[floatIndex+1] + "." + num.substr(numLength - 2, 2);
+    //       }
+    //     }
+    //   }
+    // }
+
+
     if (total[loca-3]==='.' && num.length>loca)
     {
       console.log(loca);
       console.log(total);
       return;
     }
+    console.log(num)
     this.setState({enterAmount:num});
   }
   render() {
@@ -123,7 +140,7 @@ export default class EnterAmount extends Component {
                  width: Settings.getX(420),}}>
               </View>
 
-              <TouchableOpacity 
+              <TouchableOpacity
                 disabled = {this.state.waiting}
                 style={{
                   marginTop:Settings.getY(60),

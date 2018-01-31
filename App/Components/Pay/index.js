@@ -118,7 +118,7 @@ export default class Pay extends Component {
           ],
           { cancelable: false }
         )
-      }  
+      }
     } catch (error) {
       console.error(error);
     }
@@ -211,7 +211,7 @@ export default class Pay extends Component {
           ],
           { cancelable: false }
         )
-      }  
+      }
     } catch (error) {
       console.error(error);
     }

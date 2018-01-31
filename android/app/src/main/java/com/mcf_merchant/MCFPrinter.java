@@ -218,7 +218,20 @@ public class MCFPrinter extends ReactContextBaseJavaModule {
         });
     }
 
+    @ReactMethod
+    public void printText(String content, float size) {
 
+        try {
+
+            final IWoyouService ss = woyouService;
+
+            ss.printTextWithFont(content, null, size, null);
+            ss.lineWrap(3, null);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @ReactMethod
     public void printBitmap(String data,int width,int height,final Promise p){              //打印bitmap，data为图片encode后编码

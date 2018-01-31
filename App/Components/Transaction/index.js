@@ -14,7 +14,7 @@ import {
 import Settings from '../../Config/Setting';
 import TransactionModule from '../../Modules/Transaction/TransactionModule';
 import Loading from '../Loading';
-
+import PrintModule from '../../Modules/Print/PrintModule'
 const {height, width} = Dimensions.get('window');
 
 export default class OrderList extends Component {
@@ -23,8 +23,8 @@ export default class OrderList extends Component {
     navBarBackgroundColor:"#2f3038",
     navBarButtonColor:"#c49a6c"
   }
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state={
       searchHisButtonName:'Search',
       searchTodayButtonName:'Today',
@@ -38,8 +38,10 @@ export default class OrderList extends Component {
       "page_num" :1,
       "page_size":50,
       token: '',
+      printButton:'Summary',
     }
     this.setDate = this.setDate.bind(this);
+    this._printTodaySummary = this._printTodaySummary.bind(this);
   }
   componentDidMount() {
     this.getToken();
@@ -179,6 +181,46 @@ export default class OrderList extends Component {
             }
           }
   }
+  _currentDate(){
+    let date = new Date();
+    let formatedHour = date.getHours();
+    let formatedMonth = date.getMonth() + 1;
+    let formatedMinute = date.getMinutes()+1;
+    let formatedSecond = date.getSeconds() + 1;
+
+    let formatedDate = {
+      year:date.getFullYear(),
+      month: formatedMonth < 10 ? ("0" + formatedMonth) : formatedMonth,
+      day: date.getDate(),
+      hour: formatedHour < 10 ? ("0" + formatedHour) : formatedHour,
+      minute: formatedMinute < 10 ? ("0" + formatedMinute) : formatedMinute,
+      second: formatedSecond < 10 ? ("0" + formatedSecond) : formatedSecond,
+    }
+    return formatedDate;
+  }
+  async _printTodaySummary(){
+      const pageNum = this.state.page_num;
+      const pageSize = this.state.page_size;
+      const {token} = this.state
+
+      const data = await TransactionModule.getTodaySummary(token);
+      let currentDate = this._currentDate();
+      let dateStr = currentDate.year +"-"+ currentDate.month +"-"+ currentDate.day + " " + currentDate.hour + ":"
+              + currentDate.minute + ":" + currentDate.second;
+      let printData ={
+        type:4,
+        startTime:data.start_time,
+        refund:JSON.stringify(data.refund),
+        count:JSON.stringify(data.count),
+        amountDue:JSON.stringify(data.amount_due),
+        total:JSON.stringify(data.total),
+        merchantPhoneNumber: this.props.companyCell,
+        merchantName: this.props.companyName,
+        currentDate:dateStr,
+      }
+
+      PrintModule.printContent(printData);
+  }
   render(){
     return(
       <View style={styles.container}>
@@ -281,7 +323,7 @@ export default class OrderList extends Component {
               {this.state.searchHisButtonName}
             </Text>
         </TouchableOpacity>
-        
+
       </View>
     )
   }
@@ -308,7 +350,9 @@ export default class OrderList extends Component {
           <ScrollView style={{flex:0.9,height:400, width: width}}>
             {this.renderRecords()}
           </ScrollView>
-
+          <TouchableOpacity style={styles.printButtonStyle} onPress={()=>this._printTodaySummary()}>
+            <Text style={styles.printButtonFont}>{this.state.printButton}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     )
@@ -418,11 +462,12 @@ const styles = StyleSheet.create({
     justifyContent:'center',
   },
   printButtonStyle:{
-    marginLeft:280,
+    marginLeft:260,
     marginRight:20,
+    marginBottom:50,
     backgroundColor:'#2F3038',
-    width:60,
-    flex:1,
+    width:80,
+    height:40,
     borderRadius: 8,
     justifyContent:'center',
     alignItems:'center',
