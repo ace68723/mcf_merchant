@@ -23,6 +23,8 @@ export default class EnterAmount extends Component {
     super(props);
     this.state = {
       enterAmount: "",
+      beforeFloat:"0",
+      afterFloat:"00",
       waiting: false,
     };
     this._roundTwoDig=this._roundTwoDig.bind(this);
@@ -52,25 +54,13 @@ export default class EnterAmount extends Component {
      }, 500);//设置的时间间隔由你决定
 
   }
-  _roundTwoDig(num)
+  async _roundTwoDig(num)
   {
 
     let total=this.state.enterAmount;
     let loca=total.length;
-    // let numLength = num.length;
-    // let floatIndex = num.indexOf('.');
-    // if(num.length>loca){
-    //   if(numLength > 2){
-    //     if(floatIndex == -1){
-    //       num = num.substr(0, numLength - 2)+"."+num.substr(numLength - 2, 2);
-    //     }else{
-    //       if((numLength - floatIndex) != 3 ){
-    //         num = num.slice(0, floatIndex)+num[floatIndex+1] + "." + num.substr(numLength - 2, 2);
-    //       }
-    //     }
-    //   }
-    // }
-
+    let numLength = num.length;
+    let floatIndex = num.indexOf('.');
 
     if (total[loca-3]==='.' && num.length>loca)
     {
@@ -78,7 +68,19 @@ export default class EnterAmount extends Component {
       console.log(total);
       return;
     }
-    console.log(num)
+
+    if(floatIndex == -1){
+      this.setState({beforeFloat:num.length == 0 ? "0" : num})
+    }else{
+      if(num[numLength-1] == '.' && floatIndex != numLength-1) return;
+
+      let before = num.slice(0, floatIndex);
+      let after =  num.slice(floatIndex+1, numLength);
+      this.setState({
+        beforeFloat: before.length == 0 ? "0" : before ,
+        afterFloat: after.length == 0 ? "00" : (after.length == 1 ? after + "0" : after),
+      })
+    }
     this.setState({enterAmount:num});
   }
   render() {
@@ -88,28 +90,32 @@ export default class EnterAmount extends Component {
           <View
             style={{
               backgroundColor:'white',
-              width:Settings.getX(484),
-              marginTop:Settings.getY(46),
-              height:Settings.getY(450),
+              width:Settings.getX(520),
+              height:Settings.getY(600),
+
             }}
           >
-            <Text style={{ marginTop:Settings.getY(36),
-              marginLeft:Settings.getX(38),
-              fontSize:24,
-            }}>
-              Total
-            </Text>
-            <View style={{
+
+            <Text style={{
               marginTop:Settings.getY(36),
+              marginLeft:Settings.getX(38),
+              fontSize:60,
+              fontWeight:'bold',
+              color:'black'
+            }}>
+              ${this.state.beforeFloat}.{this.state.afterFloat}
+            </Text>
+
+            <View style={{
               marginLeft:Settings.getX(38),
               flexDirection:'row',
               alignItems:'center',
               }}>
               <Text style={{
-                fontSize:24,
+                fontSize:30,
                 marginTop:Settings.getY(5)
               }}>
-                $
+                Total  $
               </Text>
 
               <TextInput
@@ -117,11 +123,11 @@ export default class EnterAmount extends Component {
                 style={{
                   flex:1,
                   marginLeft:Settings.getX(5),
-                  fontSize:24,
+                  fontSize:30,
                 }}
                 onChangeText={(enterAmount) => this._roundTwoDig(enterAmount)}
                 value={this.state.enterAmount}
-                placeholder=""
+                placeholder="0.00"
                 underlineColorAndroid='rgba(0,0,0,0)'
                 keyboardType="numeric"
               />
@@ -133,7 +139,7 @@ export default class EnterAmount extends Component {
               alignItems:'center',
             }}>
               <View style={{
-                 marginTop:Settings.getY(25),
+                 marginTop:Settings.getY(10),
                  borderBottomColor: '#D1D3D4',
                  borderBottomWidth: 1,
 
@@ -143,7 +149,7 @@ export default class EnterAmount extends Component {
               <TouchableOpacity
                 disabled = {this.state.waiting}
                 style={{
-                  marginTop:Settings.getY(60),
+                  marginTop:Settings.getY(30),
                 }}
                 activeOpacity={0.4}
                 onPress={this._handleConfirm}
