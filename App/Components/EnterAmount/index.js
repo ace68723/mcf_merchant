@@ -137,6 +137,7 @@ export default class EnterAmount extends Component {
               width:Settings.getX(484),
               height:Settings.getY(200),
               alignItems:'center',
+              alignSelf:'center'
             }}>
               <View style={{
                  marginTop:Settings.getY(10),

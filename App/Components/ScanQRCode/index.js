@@ -57,7 +57,7 @@ export default class ScanQRCode extends Component {
   async _goToCreateQRCode() {
     try {
       this.refs.loading.startLoading();
-      const {channel,title,out_trade_no} =  this.props;
+      const {channel,title,out_trade_no,tipAmount} =  this.props;
       const {token} = this.state
       let totalAmount = this.props.totalAmount;
       totalAmount = parseInt(totalAmount*100, 10);
@@ -73,7 +73,8 @@ export default class ScanQRCode extends Component {
             'vendor_channel': channel,
             'total_fee_currency': 'CAD',
             'device_id':DeviceInfo.getSerialNumber(),
-            'total_fee_in_cent':totalAmount
+            'total_fee_in_cent':totalAmount,
+            'tips':parseInt(tipAmount*100,10)
           }),
         });
       let responseJson = await response.json();

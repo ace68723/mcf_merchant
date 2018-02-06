@@ -135,8 +135,8 @@ export default class Pay extends Component {
   async _getOrderDetailFromApi(totalAmount){
     try {
       const {channel,title,companyName,out_trade_no} =  this.props;
-      const {token} = this.state;
-      console.log(totalAmount);
+      const {token, tipAmount} = this.state;
+
       let response = await fetch(
         'https://mcfpayapi.ca/api/v1/merchant/create_order/',{
           method: 'POST',
@@ -148,7 +148,8 @@ export default class Pay extends Component {
             'vendor_channel': channel,
             'total_fee_currency': 'CAD',
             'device_id':DeviceInfo.getSerialNumber(),
-            'total_fee_in_cent':totalAmount
+            'total_fee_in_cent':totalAmount,
+            'tips':parseInt(tipAmount*100,10)
           }),
         });
       let responseJson = await response.json();
@@ -162,7 +163,7 @@ export default class Pay extends Component {
         this.props.navigator.push({
           screen: 'CreateQRCode',
           title: 'QR Code',
-          passProps: {token,codeUrl,totalAmount,out_trade_no,channel},
+          passProps: {token,codeUrl,totalAmount,out_trade_no,channel,tipAmount},
           animationType: 'slide-horizontal'
         });
         return responseJson.ev_data;
@@ -222,6 +223,7 @@ export default class Pay extends Component {
     let totalAmount = this._calculateTotal();
     const reg = /^(([1-9]\d*)(\.\d{1,2})?)$|(0\.0?([1-9]\d?))$/;
     console.log(tipAmount,reg.test(tipAmount))
+    console.log(tipAmount)
     if(this.state.tipsType=='1' ||
        this.state.tipsType=='2' ||
        this.state.tipsType=='3' ||
@@ -230,7 +232,7 @@ export default class Pay extends Component {
       ){
         try{
           this.refs.loading.startLoading();
-          const data = await PayModule.preCreateAuthpay(token,channel,totalAmount);
+          const data = await PayModule.preCreateAuthpay(token,channel,totalAmount,tipAmount);
           this.setState({out_trade_no:data});
           this.refs.loading.endLoading();
           const {out_trade_no} = data;
@@ -238,7 +240,7 @@ export default class Pay extends Component {
           this.props.navigator.push({
              screen: 'ScanQRCode',
              title: 'Scan QR Code',
-             passProps: {token,channel,totalAmount,out_trade_no,companyName},
+             passProps: {token,channel,totalAmount,out_trade_no,companyName,tipAmount},
              animationType: 'slide-horizontal'
            });
         }catch(error){
@@ -296,9 +298,9 @@ export default class Pay extends Component {
   }
   _calculateTips()
   {
-    if (this.state.tipsType=='1') return (this.state.amount*0.1).toFixed(2);
+    if (this.state.tipsType=='1') return (this.state.amount*0.12).toFixed(2);
     if (this.state.tipsType=='2') return (this.state.amount*0.15).toFixed(2);
-    if (this.state.tipsType=='3') return (this.state.amount*0.2).toFixed(2);
+    if (this.state.tipsType=='3') return (this.state.amount*0.18).toFixed(2);
     if (this.state.tipsType=='4') return (+(this.state.tipAmount)).toFixed(2);
     return 0;
   }
@@ -330,7 +332,8 @@ export default class Pay extends Component {
       fontColor2:'#939598',
       fontColor3:'#939598',
       tipsType:'1',
-      tipAmount:'',
+      tipAmount:(this.state.amount*0.12).toFixed(2)+""
+
     });
   }
   _pressButton2()
@@ -345,7 +348,8 @@ export default class Pay extends Component {
       fontColor2:'white',
       fontColor3:'#939598',
       tipsType:'2',
-      tipAmount:'',
+      tipAmount:(this.state.amount*0.15).toFixed(2)+""
+
     });
   }
 
@@ -361,12 +365,12 @@ export default class Pay extends Component {
       fontColor2:'#939598',
       fontColor3:'white',
       tipsType:'3',
-      tipAmount:'',
+      tipAmount:(this.state.amount*0.18).toFixed(2)+""
     });
   }
   _pressButton4()
   {
-      console.log('btn3');
+      console.log('btn4');
     this.setState({
       backgroundColor1:'white',
       backgroundColor2:'white',
@@ -483,7 +487,7 @@ export default class Pay extends Component {
                   height:Settings.getY(40),
                 }}>
                   <Text style={{color:this.state.fontColor1, fontSize:12}}>
-                    10%
+                    12%
                   </Text>
                 </View>
 
@@ -517,7 +521,7 @@ export default class Pay extends Component {
                   height:Settings.getY(40),
                 }}>
                   <Text style={{color:this.state.fontColor3, fontSize:12}}>
-                    20%
+                    18%
                   </Text>
                 </View>
 

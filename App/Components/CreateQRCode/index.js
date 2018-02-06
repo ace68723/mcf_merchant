@@ -42,14 +42,14 @@ export default class Pay extends Component {
   }
   async _goToScanQRCode() {
     this.refs.loading.startLoading();
-    const {channel,title,token} =  this.props;
+    const {channel,title,token, tipAmount} =  this.props;
     let totalAmount = this.state.totalAmount;
     console.log(totalAmount);
     totalAmount = parseInt(totalAmount*100, 10);
     totalAmount = totalAmount/100;
     try{
       console.log(totalAmount);
-      const data = await PayModule.preCreateAuthpay(token,channel,totalAmount);
+      const data = await PayModule.preCreateAuthpay(token,channel,totalAmount,tipAmount);
       this.setState({out_trade_no:data});
       this.refs.loading.endLoading();
       const {out_trade_no} = data;
@@ -57,7 +57,7 @@ export default class Pay extends Component {
       this.props.navigator.push({
           screen: 'ScanQRCode',
           title: 'Scan QR Code',
-          passProps: {channel,totalAmount,out_trade_no},
+          passProps: {channel,totalAmount,out_trade_no,tipAmount},
           animationType: 'slide-horizontal'
         });
     }catch(error){
@@ -71,8 +71,8 @@ export default class Pay extends Component {
         { cancelable: false }
       )
     }
-  } 
-  
+  }
+
   async _checkOrderStatus(channel,outTradeNo) {
     try{
     const {outTradeNo,channel,token} =this.state;

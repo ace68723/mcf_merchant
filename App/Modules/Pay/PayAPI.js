@@ -9,11 +9,13 @@ export default  {
           'Content-Type': 'application/json',
         }
     }
+
     options.body = JSON.stringify({
       "vendor_channel":channel,
     	"total_fee_in_cent": amount,
     	"total_fee_currency":"CAD",
-    	"device_id":device_id
+    	"device_id":device_id,
+      "tips":tipAmount
     })
 
     console.log(options)

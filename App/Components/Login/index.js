@@ -22,9 +22,9 @@ import Loading from '../Loading';
 export default class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { merchantId:'',
-                   username:'',
-                   password:'',
+    this.state = { merchantId:'testMerchant',
+                   username:'testAdmin',
+                   password:'admin123*',
                    isShowing: false,
                  };
 
