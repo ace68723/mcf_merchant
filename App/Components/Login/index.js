@@ -31,15 +31,33 @@ export default class Login extends Component {
   }
   componentWillMount()
   {
+    AsyncStorage.getItem('userData',(err)=>{
+      console.log(err)
+    }).then((data)=>{
+      let userData = JSON.parse(data)
+      if(userData){
+        this.setState({
+          merchantId:userData.merchantId,
+          username:userData.username,
+          password:userData.password
+        })
+      }
 
+    })
   }
 
   async login(merchantId, username, password){
        try{
+          let userData = {
+            merchantId:merchantId,
+            username:username,
+            password:password,
+          }
           this.refs.loading.startLoading();
           const data = await LoginModule.login(merchantId, username, password);
           await AsyncStorage.setItem('token', data.token);
-          data =await AsyncStorage.getItem('token')
+          await AsyncStorage.setItem('userData', JSON.stringify(userData));
+          data =await AsyncStorage.getItem('token');
           console.log(data)
           this.refs.loading.endLoading();
           this.props.navigator.resetTo({
