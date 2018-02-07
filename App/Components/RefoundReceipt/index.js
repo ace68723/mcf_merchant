@@ -36,7 +36,7 @@ export default class Pay extends Component {
       this._pressScan=this._pressScan.bind(this);
       this.goBackHome = this.goBackHome.bind(this);
   }
-  
+
   _pressScan(){
     console.log(this.state);
     let method;

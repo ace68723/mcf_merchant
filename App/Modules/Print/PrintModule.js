@@ -187,7 +187,7 @@ export default  {
              await NativeModules.MCFPrinter.printOriginalText("________________________________");
              await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.MCFPrinter.printText("  ***TOTALS REPORT***  ",30);
+             await NativeModules.MCFPrinter.printText("   ***TOTALS REPORT***  ",30);
 
              await NativeModules.MCFPrinter.printOriginalText("Transactions Since");
              await NativeModules.MCFPrinter.lineWrap(1);
@@ -208,13 +208,13 @@ export default  {
              await NativeModules.MCFPrinter.printOriginalText(refundStr);
              await NativeModules.MCFPrinter.lineWrap(1);
 
-             // let purchaseStr = await this._setLine("PURCHASE RECEIVED", "$" + data.purchase)
-             // await NativeModules.MCFPrinter.printOriginalText(purchaseStr);
-             // await NativeModules.MCFPrinter.lineWrap(1);
-             //
-             // let tipStr = await this._setLine("TIPS RECEIVED", "$" + data.tips)
-             // await NativeModules.MCFPrinter.printOriginalText(tipStr);
-             // await NativeModules.MCFPrinter.lineWrap(1);
+             let purchaseStr = await this._setLine("PURCHASE RECEIVED", "$" + data.purchase)
+             await NativeModules.MCFPrinter.printOriginalText(purchaseStr);
+             await NativeModules.MCFPrinter.lineWrap(1);
+
+             let tipStr = await this._setLine("TIPS RECEIVED", "$" + data.tips)
+             await NativeModules.MCFPrinter.printOriginalText(tipStr);
+             await NativeModules.MCFPrinter.lineWrap(1);
 
              let amountDueStr = await this._setLine("AMOUNT DUE", "$" + data.amountDue)
              await NativeModules.MCFPrinter.printOriginalText(amountDueStr);

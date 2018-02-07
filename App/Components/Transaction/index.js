@@ -217,6 +217,8 @@ export default class OrderList extends Component {
         merchantPhoneNumber: this.props.companyCell,
         merchantName: this.props.companyName,
         currentDate:dateStr,
+        tips:data.tips+"",
+        purchase:data.purchase+""
       }
 
       PrintModule.printContent(printData);
