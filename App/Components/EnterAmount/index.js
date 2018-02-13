@@ -9,9 +9,13 @@ import {
   TextInput,
   TouchableHighlight,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import Loading from '../Loading';
 import Settings from '../../Config/Setting';
+import MCFKeyboard from '../Keyboard';
+
+const {width, height} = Dimensions.get('window');
 export default class EnterAmount extends Component {
   static navigatorStyle = {
     navBarTextColor:"#c49a6c",
@@ -24,6 +28,7 @@ export default class EnterAmount extends Component {
     this.state = {
       enterAmount: "0.00",
       waiting: false,
+      amountFontSize:60
     };
     this._roundTwoDig=this._roundTwoDig.bind(this);
     this._handleConfirm=this._handleConfirm.bind(this);
@@ -40,7 +45,7 @@ export default class EnterAmount extends Component {
     }
     const {channel,title} = this.props;
     const {enterAmount,companyName} = this.state;
-    Keyboard.dismiss();
+    //Keyboard.dismiss();
     this.props.navigator.push({
        screen: 'Pay',
        title: title ,
@@ -52,9 +57,14 @@ export default class EnterAmount extends Component {
      }, 500);//设置的时间间隔由你决定
 
   }
+
+  _cleanAmount(){
+    this.setState({enterAmount:"0.00"});
+  }
   async _roundTwoDig(num)
   {
-    let total = num;
+    
+    let total = this.state.enterAmount+num;
     let loca = total.length;
     let digtal='';
     let i;
@@ -64,7 +74,7 @@ export default class EnterAmount extends Component {
     }
     for (let j = i; i < loca; i++)
     {
-      if (total[i]>='0' && total[i]<='9') digtal=digtal+total[i];
+      if (total[i]>='0' && total[i]<='9') digtal=digtal + total[i];
     }
     let len = digtal.length;
     let finalNumber = '';
@@ -76,12 +86,22 @@ export default class EnterAmount extends Component {
       finalNumber='0.'+digtal;
     }
     else if (len>2){
+     
+      
       finalNumber='.' + digtal[len-2] + digtal[len-1];
+    
       for (let j=len-3;j>=0;j--)
       {
         finalNumber=digtal[j]+finalNumber;
       }
     }
+    if(finalNumber.length > 8){
+      if(this.state.amountFontSize > 45) 
+        this.setState({amountFontSize:this.state.amountFontSize-4});
+    }else{
+      this.setState({amountFontSize:60});
+    }
+
     this.setState({enterAmount:finalNumber});
 
   }
@@ -93,14 +113,14 @@ export default class EnterAmount extends Component {
             style={{
               backgroundColor:'white',
               width:Settings.getX(520),
-              height:Settings.getY(600),
+              height:height,
 
             }}
           >
             <Text style={{
               marginTop:Settings.getY(36),
               marginLeft:Settings.getX(38),
-              fontSize:60,
+              fontSize:this.state.amountFontSize,
               fontWeight:'bold',
               color:'black'
             }}>
@@ -108,44 +128,16 @@ export default class EnterAmount extends Component {
             </Text>
 
             <View style={{
-              marginLeft:Settings.getX(38),
-              flexDirection:'row',
+              width:Settings.getX(520),
+              height:height-Settings.getY(36),
               alignItems:'center',
-              }}>
-              <Text style={{
-                fontSize:30,
-                marginTop:Settings.getY(5)
-              }}>
-                Total  $
-              </Text>
-
-              <TextInput
-                autoFocus
-                style={{
-                  flex:1,
-                  marginLeft:Settings.getX(5),
-                  fontSize:30,
-                }}
-                onChangeText={(enterAmount) => this._roundTwoDig(enterAmount)}
-                value={this.state.enterAmount}
-                placeholder="0.00"
-                underlineColorAndroid='rgba(0,0,0,0)'
-                keyboardType="numeric"
-              />
-            </View>
-
-            <View style={{
-              width:Settings.getX(484),
-              height:Settings.getY(200),
-              alignItems:'center',
-              alignSelf:'center'
+              alignSelf:'center',
             }}>
               <View style={{
                  marginTop:Settings.getY(10),
                  borderBottomColor: '#D1D3D4',
                  borderBottomWidth: 1,
-
-                 width: Settings.getX(420),}}>
+                 width: Settings.getX(420)}}>
               </View>
 
               <TouchableOpacity
@@ -173,10 +165,13 @@ export default class EnterAmount extends Component {
                   </Text>
                 </View>
               </TouchableOpacity>
-
-
+              
+              <MCFKeyboard style={{marginTop:Settings.getY(40),width:Settings.getX(520)}} 
+                            inputFunc={(num)=>this._roundTwoDig(num)} 
+                            deleteFunc={()=>this._cleanAmount()}
+                            confirmFunc={()=>this._handleConfirm()}/>
             </View>
-
+            
           </View>
 
       </View>
