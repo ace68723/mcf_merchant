@@ -22,9 +22,7 @@ export default class EnterAmount extends Component {
   {
     super(props);
     this.state = {
-      enterAmount: "",
-      beforeFloat:"0",
-      afterFloat:"00",
+      enterAmount: "0.00",
       waiting: false,
     };
     this._roundTwoDig=this._roundTwoDig.bind(this);
@@ -56,32 +54,36 @@ export default class EnterAmount extends Component {
   }
   async _roundTwoDig(num)
   {
-
-    let total=this.state.enterAmount;
-    let loca=total.length;
-    let numLength = num.length;
-    let floatIndex = num.indexOf('.');
-
-    if (total[loca-3]==='.' && num.length>loca)
+    let total = num;
+    let loca = total.length;
+    let digtal='';
+    let i;
+    for (i = 0;i < loca; i++)
     {
-      console.log(loca);
-      console.log(total);
-      return;
+      if (total[i]>='1' && total[i]<='9') break;
     }
-
-    if(floatIndex == -1){
-      this.setState({beforeFloat:num.length == 0 ? "0" : num})
-    }else{
-      if(num[numLength-1] == '.' && floatIndex != numLength-1) return;
-
-      let before = num.slice(0, floatIndex);
-      let after =  num.slice(floatIndex+1, numLength);
-      this.setState({
-        beforeFloat: before.length == 0 ? "0" : before ,
-        afterFloat: after.length == 0 ? "00" : (after.length == 1 ? after + "0" : after),
-      })
+    for (let j = i; i < loca; i++)
+    {
+      if (total[i]>='0' && total[i]<='9') digtal=digtal+total[i];
     }
-    this.setState({enterAmount:num});
+    let len = digtal.length;
+    let finalNumber = '';
+    if (len==0) { finalNumber = '0.00';}
+    else if (len==1) {
+      finalNumber='0.0'+digtal;
+    }
+    else if (len==2){
+      finalNumber='0.'+digtal;
+    }
+    else if (len>2){
+      finalNumber='.' + digtal[len-2] + digtal[len-1];
+      for (let j=len-3;j>=0;j--)
+      {
+        finalNumber=digtal[j]+finalNumber;
+      }
+    }
+    this.setState({enterAmount:finalNumber});
+
   }
   render() {
     return (
@@ -95,7 +97,6 @@ export default class EnterAmount extends Component {
 
             }}
           >
-
             <Text style={{
               marginTop:Settings.getY(36),
               marginLeft:Settings.getX(38),
@@ -103,7 +104,7 @@ export default class EnterAmount extends Component {
               fontWeight:'bold',
               color:'black'
             }}>
-              ${this.state.beforeFloat}.{this.state.afterFloat}
+              ${this.state.enterAmount}
             </Text>
 
             <View style={{
