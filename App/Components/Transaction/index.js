@@ -120,10 +120,16 @@ export default class OrderList extends Component {
   async getTodayTransaction(page_num, page_size){
           const pageNum = this.state.page_num;
           const pageSize = this.state.page_size;
-          const {token} = this.state
+          const {token} = this.state;
+          let {year, month, day} = this._currentDate();
+          let dateString = year + '/' + month + '/' + day;
+          console.log(dateString)
           try{
             this.refs.loading.startLoading();
-            const data = await TransactionModule.getTodayTransaction(token,pageNum,pageSize);
+            await this.setDate('start',dateString);
+            await this.setDate('end',dateString);
+            //const data = await TransactionModule.getTodayTransaction(token,pageNum,pageSize);
+            const data = await TransactionModule.getHistoryTransaction(token,dateString,pageNum,dateString,pageSize)
             this.refs.loading.endLoading();
               console.log(data)
               this.setState({
@@ -272,12 +278,12 @@ export default class OrderList extends Component {
       this.setState({
         startDate: dateStr,
       })
-      console.log(startDate)
+
     }else{
       this.setState({
         endDate: dateStr,
       })
-      console.log(endDate)
+
 
     }
   }
@@ -353,6 +359,7 @@ export default class OrderList extends Component {
             {this.renderRecords()}
           </ScrollView>
           <TouchableOpacity style={styles.printButtonStyle} onPress={()=>this._printTodaySummary()}>
+            <Text style={styles.printButtonFont}>Today's</Text>
             <Text style={styles.printButtonFont}>{this.state.printButton}</Text>
           </TouchableOpacity>
         </View>
@@ -360,22 +367,30 @@ export default class OrderList extends Component {
     )
   }
   renderRecords(){
-    return this.state.list.map((record, index)=>{
+    if(this.state.list.length > 0){
+      return this.state.list.map((record, index)=>{
+        return(
+          <View style={styles.recordView}
+                  key={index}>
+            <View style={{flex:0.47, marginLeft:15, alignItems:'center'}}>
+              <Text style={styles.recordTitleFont}>{record.ref_id}</Text>
+            </View>
+            <View style={{flex:0.32,paddingLeft:10, alignItems:'center'}}>
+              <Text style={styles.recordTitleFont}>{record.time}</Text>
+            </View>
+            <View style={{flex:0.21, marginRight:15, alignItems:'center'}}>
+              <Text style={styles.recordTitleFont}>{record.amount_in_cent}</Text>
+            </View>
+          </View>
+        )
+      })
+    }else{
       return(
-        <View style={styles.recordView}
-                key={index}>
-          <View style={{flex:0.47, marginLeft:15, alignItems:'center'}}>
-            <Text style={styles.recordTitleFont}>{record.ref_id}</Text>
-          </View>
-          <View style={{flex:0.32,paddingLeft:10, alignItems:'center'}}>
-            <Text style={styles.recordTitleFont}>{record.time}</Text>
-          </View>
-          <View style={{flex:0.21, marginRight:15, alignItems:'center'}}>
-            <Text style={styles.recordTitleFont}>{record.amount_in_cent}</Text>
-          </View>
+        <View style={{alignSelf:'center',alignItems:'center', marginTop:100 }}>
+            <Text style={styles.recordTitleFont}>No records</Text>
         </View>
       )
-    })
+    }
   }
 
 }
