@@ -150,7 +150,7 @@ export default  {
       let dataLen = data.length;
       let space = "";
       if((titleLen + dataLen) < 30){
-        for(let i = 0; i < (30-titleLen-dataLen); i++){
+        for(let i = 0; i < (25-titleLen-dataLen); i++){
           space += " ";
         }
       }
