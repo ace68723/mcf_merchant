@@ -75,5 +75,21 @@ export default  {
       console.log(error);
       throw error
     }
+  },
+  async getTransatctionById(token, order_id){
+    try{
+      const orderDetail = await TransactionAPI.getTransatctionById(token,order_id);
+      if(orderDetail.ev_error == "0"){
+          const eo_data = orderDetail.ev_data
+          return eo_data;
+      }else{
+        const errorMessage = orderDetail.ev_message;
+        throw errorMessage
+      }
+    }
+    catch (error) {
+      console.log(error);
+      throw error
+    }
   }
 }

@@ -70,5 +70,22 @@ console.log(options);
       return fetch(url,options)
             .then((response) => response.json())
             .catch((error) => {throw error})
-  }
+  },
+  getTransatctionById(token,order_id){
+    const url = 'https://mcfpayapi.ca/api/v1/merchant/get_txn_by_id';
+    let options = {
+        method: 'POST',
+        mode:'cors',
+        headers: {
+          'Auth-Token': token,
+          'Content-Type': 'application/json',
+        }
+    }
+    options.body = JSON.stringify({
+      "ref_id":order_id
+    })
+    return fetch(url,options)
+          .then((response) => response.json())
+          .catch((error) => {throw error})
+},
 }

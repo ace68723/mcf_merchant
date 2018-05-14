@@ -46,11 +46,11 @@ export default class Pay extends Component {
     this._convertChannel()
   }
   _convertChannel() {
-    if(this.state.channel == 'WX') {
+    if(this.state.channel == "WX") {
       this.setState({
          display: 'Wechat Pay',
       })
-    } else if(this.state.channel == 'ALI') {
+    } else if(this.state.channel == "ALI") {
       this.setState({
         display: 'Ali Pay',
      })

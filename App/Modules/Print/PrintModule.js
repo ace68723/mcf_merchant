@@ -53,39 +53,39 @@ export default  {
          try {
 
 
-            await NativeModules.MCFPrinter.printOriginalText("        ");
+            await NativeModules.MCFPrinter.printTextWithFont("        ", "gh", 28);
 
-             await NativeModules.MCFPrinter.printBitmap(logobase64, 200/*width*/, 150/*height*/);
+             await NativeModules.MCFPrinter.printBitmap(logobase64, 200/*width*/, 150/*hei"gh"t*/);
 
              await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.MCFPrinter.printOriginalText(data.merchantName);
+             await NativeModules.MCFPrinter.printTextWithFont(data.merchantName, "gh", 28);
 
              await NativeModules.MCFPrinter.lineWrap(1);
 
-             await NativeModules.MCFPrinter.printOriginalText(data.merchantAddress);
+             await NativeModules.MCFPrinter.printTextWithFont(data.merchantAddress, "gh", 28);
 
              await NativeModules.MCFPrinter.lineWrap(1);
-             await NativeModules.MCFPrinter.printOriginalText(data.merchantPhoneNumber);
+             await NativeModules.MCFPrinter.printTextWithFont(data.merchantPhoneNumber, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
-             await NativeModules.MCFPrinter.printOriginalText("________________________________");
+             await NativeModules.MCFPrinter.printTextWithFont("________________________________", "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(2);
-             await NativeModules.MCFPrinter.printOriginalText("#"+data.refId);
+             await NativeModules.MCFPrinter.printTextWithFont("#"+data.refId, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
-             await NativeModules.MCFPrinter.printOriginalText("Date: "+data.date);
+             await NativeModules.MCFPrinter.printTextWithFont("Date: "+data.date, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
-             await NativeModules.MCFPrinter.printOriginalText("Channel: "+data.method);
+             await NativeModules.MCFPrinter.printTextWithFont("Channel: "+data.method, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
-             await NativeModules.MCFPrinter.printOriginalText("________________________________");
+             await NativeModules.MCFPrinter.printTextWithFont("________________________________", "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.MCFPrinter.printOriginalText("Exchange Rate: "+data.rate);
+             await NativeModules.MCFPrinter.printTextWithFont("Exchange Rate: "+data.rate, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
 
-             await NativeModules.MCFPrinter.printOriginalText("Amount: $"+data.totalAmount);
+             await NativeModules.MCFPrinter.printTextWithFont("Amount: $"+data.totalAmount, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
 
-             await NativeModules.MCFPrinter.printOriginalText("CNY Amount: ￥"+data.CNYamount);
+             await NativeModules.MCFPrinter.printTextWithFont("CNY Amount: ￥"+data.CNYamount, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(2);
              await NativeModules.MCFPrinter.printQr(data.QRCode,10,1)
 
@@ -105,34 +105,34 @@ export default  {
          try {
 
 
-            await NativeModules.MCFPrinter.printOriginalText("        ");
+            await NativeModules.MCFPrinter.printTextWithFont("        ", "gh", 28);
 
-             await NativeModules.MCFPrinter.printBitmap(logobase64, 200/*width*/, 150/*height*/);
-
-             await NativeModules.MCFPrinter.lineWrap(2);
-
-             await NativeModules.MCFPrinter.printOriginalText(data.merchantName);
+             await NativeModules.MCFPrinter.printBitmap(logobase64, 200/*width*/, 150/*hei"gh"t*/);
 
              await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.MCFPrinter.printOriginalText(data.merchantAddress);
+             await NativeModules.MCFPrinter.printTextWithFont(data.merchantName, "gh", 28);
+
+             await NativeModules.MCFPrinter.lineWrap(2);
+
+             await NativeModules.MCFPrinter.printTextWithFont(data.merchantAddress, "gh", 28);
 
              await NativeModules.MCFPrinter.lineWrap(1);
-             await NativeModules.MCFPrinter.printOriginalText(data.merchantPhoneNumber);
+             await NativeModules.MCFPrinter.printTextWithFont(data.merchantPhoneNumber, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.MCFPrinter.printOriginalText("Date: "+data.start+" ~ "+data.end);
+             await NativeModules.MCFPrinter.printTextWithFont("Date: "+data.start+" ~ "+data.end, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
-             await NativeModules.MCFPrinter.printOriginalText("________________________________");
+             await NativeModules.MCFPrinter.printTextWithFont("________________________________", "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.MCFPrinter.printOriginalText("No.   Time                Amount");
+             await NativeModules.MCFPrinter.printTextWithFont("No.   Time                Amount", "gh", 28);
 
              await NativeModules.MCFPrinter.lineWrap(2);
 
              for (var i=0;i<data.transaction.length;i++)
              {
-               await NativeModules.MCFPrinter.printOriginalText(data.transaction[i].number+"  "+data.transaction[i].time+" $"+data.transaction[i].totalAmount);
+               await NativeModules.MCFPrinter.printTextWithFont(data.transaction[i].number+"  "+data.transaction[i].time+" $"+data.transaction[i].totalAmount, "gh", 28);
                await NativeModules.MCFPrinter.lineWrap(2);
              }
 
@@ -164,63 +164,63 @@ export default  {
          try {
 
 
-            await NativeModules.MCFPrinter.printOriginalText("        ");
+            await NativeModules.MCFPrinter.printTextWithFont("        ", "gh", 28);
 
              await NativeModules.MCFPrinter.printBitmap(logobase64, 200/*width*/, 150/*height*/);
 
              await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.MCFPrinter.printOriginalText(data.merchantName);
+             await NativeModules.MCFPrinter.printTextWithFont(data.merchantName, "gh", 28);
 
              await NativeModules.MCFPrinter.lineWrap(1);
 
-             await NativeModules.MCFPrinter.printOriginalText(data.merchantPhoneNumber);
+             await NativeModules.MCFPrinter.printTextWithFont(data.merchantPhoneNumber, "gh", 28);
 
              await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.MCFPrinter.printOriginalText("Current Time: ");
+             await NativeModules.MCFPrinter.printTextWithFont("Current Time: ", "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
-             await NativeModules.MCFPrinter.printOriginalText(data.currentDate);
+             await NativeModules.MCFPrinter.printTextWithFont(data.currentDate, "gh", 28);
 
              await NativeModules.MCFPrinter.lineWrap(1);
 
-             await NativeModules.MCFPrinter.printOriginalText("________________________________");
+             await NativeModules.MCFPrinter.printTextWithFont("________________________________", "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(2);
 
              await NativeModules.MCFPrinter.printText("   ***TOTALS REPORT***  ",30);
 
-             await NativeModules.MCFPrinter.printOriginalText("Transactions Since");
+             await NativeModules.MCFPrinter.printTextWithFont("Transactions Since", "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
 
-             await NativeModules.MCFPrinter.printOriginalText(data.startTime);
+             await NativeModules.MCFPrinter.printTextWithFont(data.startTime, "gh", 28);
 
              await NativeModules.MCFPrinter.lineWrap(2);
 
              let totalStr = await this._setLine("TOTAL", "$" + data.total)
-             await NativeModules.MCFPrinter.printOriginalText(totalStr);
+             await NativeModules.MCFPrinter.printTextWithFont(totalStr, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
 
              let countStr = await this._setLine("COUNT", data.count)
-             await NativeModules.MCFPrinter.printOriginalText(countStr);
+             await NativeModules.MCFPrinter.printTextWithFont(countStr, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
 
              let refundStr = await this._setLine("REFUNDS", "($"+ data.refund+ ")")
-             await NativeModules.MCFPrinter.printOriginalText(refundStr);
+             await NativeModules.MCFPrinter.printTextWithFont(refundStr, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
 
              let purchaseStr = await this._setLine("PURCHASE RECEIVED", "$" + data.purchase)
-             await NativeModules.MCFPrinter.printOriginalText(purchaseStr);
+             await NativeModules.MCFPrinter.printTextWithFont(purchaseStr, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
 
              let tipStr = await this._setLine("TIPS RECEIVED", "$" + data.tips)
-             await NativeModules.MCFPrinter.printOriginalText(tipStr);
+             await NativeModules.MCFPrinter.printTextWithFont(tipStr, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
 
              let amountDueStr = await this._setLine("AMOUNT DUE", "$" + data.amountDue)
-             await NativeModules.MCFPrinter.printOriginalText(amountDueStr);
+             await NativeModules.MCFPrinter.printTextWithFont(amountDueStr, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(3);
 
-             await NativeModules.MCFPrinter.printOriginalText("       APPROVED-THANK YOU     ");
+             await NativeModules.MCFPrinter.printTextWithFont("       APPROVED-THANK YOU     ", "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
 
              await NativeModules.MCFPrinter.printText("  Retain this copy for your records",20);
@@ -246,32 +246,32 @@ export default  {
          try {
 
 
-            await NativeModules.MCFPrinter.printOriginalText("        ");
+            await NativeModules.MCFPrinter.printTextWithFont("        ", "gh", 28);
 
-             await NativeModules.MCFPrinter.printBitmap(logobase64, 200/*width*/, 150/*height*/);
+             await NativeModules.MCFPrinter.printBitmap(logobase64, 200/*width*/, 150/*hei"gh"t*/);
 
              await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.MCFPrinter.printOriginalText(data.merchantName);
+             await NativeModules.MCFPrinter.printTextWithFont(data.merchantName, "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(1);
-             await NativeModules.MCFPrinter.printOriginalText("Date: "+data.date);
+             await NativeModules.MCFPrinter.printTextWithFont("Date: "+data.date, "gh", 28);
 
              await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.MCFPrinter.printOriginalText("Order Number:");
+             await NativeModules.MCFPrinter.printTextWithFont("Order Number:", "gh", 28);
 
              await NativeModules.MCFPrinter.lineWrap(1);
 
-             await NativeModules.MCFPrinter.printOriginalText(data.refId);
+             await NativeModules.MCFPrinter.printTextWithFont(data.refId, "gh", 28);
 
              await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.MCFPrinter.printOriginalText("Amount: $"+data.totalAmount);
+             await NativeModules.MCFPrinter.printTextWithFont("Amount: $"+data.totalAmount, "gh", 28);
 
 
              await NativeModules.MCFPrinter.lineWrap(2);
 
-             await NativeModules.MCFPrinter.printOriginalText("Refunded");
+             await NativeModules.MCFPrinter.printTextWithFont("Refunded", "gh", 28);
              await NativeModules.MCFPrinter.lineWrap(3);
 
 

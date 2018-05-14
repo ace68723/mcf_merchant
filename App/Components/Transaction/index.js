@@ -42,6 +42,7 @@ export default class OrderList extends Component {
     }
     this.setDate = this.setDate.bind(this);
     this._printTodaySummary = this._printTodaySummary.bind(this);
+    this.getTransatctionById = this.getTransatctionById.bind(this);
   }
   componentDidMount() {
     this.getToken();
@@ -51,7 +52,9 @@ export default class OrderList extends Component {
     this.setState({
       token: data,
     })
+    console.log(data)
   }
+  
   async getHistoryTransaction(page_num, page_size) {
           const pageNum = this.state.page_num;
           const pageSize = this.state.page_size;
@@ -187,6 +190,85 @@ export default class OrderList extends Component {
             }
           }
   }
+  async getTransatctionById(order_id){
+    const {token} = this.state;
+    try{
+      this.refs.loading.startLoading();
+      //const data = await TransactionModule.getTodayTransaction(token,pageNum,pageSize);
+      const data = await TransactionModule.getTransatctionById(token,order_id)
+      this.refs.loading.endLoading();
+      this.props.navigator.push({
+        screen: 'OrderReceipt',
+        navigatorStyle: {
+          navBarHidden: true
+        },
+        passProps: {
+            merchantName: data.merchant_name,
+            merchantAddress: data.address,
+            merchantPhoneNumber: data.cell,
+            refId: data.ref_id,
+            time: data.time,
+            channel: data.vendor_channel,
+            rate: data.exchange_rate,
+            totalAmount: data.amount_in_cent/100,
+            CNYamount: data.paid_fee_in_cent/100,
+            status: data.status,
+        },
+        title:'Order Receipt',
+        animationType: 'slide-horizontal'
+      }); 
+    }catch(error){
+      console.log(error)
+      if (error == 'TOKEN_EXPIRE') {
+        Alert.alert(
+          "ERROR",
+          'Token Expires, please login again.',
+          [
+            {text: 'Ok',onPress:()=>{
+              this.refs.loading.endLoading();
+              this.props.navigator.push({
+              screen: 'Login',
+              title: '',
+              navigatorStyle: {
+                navBarHidden: true
+              },
+              passProps: {},
+              animationType: 'slide-horizontal'
+            });}},
+          ],
+          { cancelable: false }
+        )
+      } if (error == 'TOKEN_KICKED') {
+        Alert.alert(
+          "ERROR",
+          'Your account has been logged in from another device.',
+          [
+            {text: 'Ok',onPress:()=>{
+              this.refs.loading.endLoading();
+              this.props.navigator.push({
+              screen: 'Login',
+              title: '',
+              navigatorStyle: {
+                navBarHidden: true
+              },
+              passProps: {},
+              animationType: 'slide-horizontal'
+            });}},
+          ],
+          { cancelable: false }
+        )
+      } else {
+        Alert.alert(
+          "ERROR",
+          error,
+          [
+            {text: "OK", onPress: () => this.refs.loading.endLoading()},
+          ],
+          { cancelable: false }
+        )
+      }
+    }
+}
   _currentDate(){
     let date = new Date();
     let formatedHour = date.getHours();
@@ -370,7 +452,7 @@ export default class OrderList extends Component {
     if(this.state.list.length > 0){
       return this.state.list.map((record, index)=>{
         return(
-          <View style={styles.recordView}
+          <TouchableOpacity onPress = {() => this.getTransatctionById(record.ref_id)} style={styles.recordView}
                   key={index}>
             <View style={{flex:0.47, marginLeft:15, alignItems:'center'}}>
               <Text style={styles.recordTitleFont}>{record.ref_id}</Text>
@@ -381,7 +463,7 @@ export default class OrderList extends Component {
             <View style={{flex:0.21, marginRight:15, alignItems:'center'}}>
               <Text style={styles.recordTitleFont}>{record.amount_in_cent}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )
       })
     }else{
